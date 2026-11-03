@@ -3,7 +3,7 @@ import { UserRoleValues } from "../enums/UserRole.js";
 import { BooleanLike, RequiredText } from "./Common.js";
 
 export const LoginSchema = z.object({
-  Email: z.string({ required_error: "Email wajib diisi" }).trim().email("Format email tidak valid"),
+  Email: z.string({ required_error: "Email wajib diisi" }).trim().min(1, "Email wajib diisi").email("Format email tidak valid"),
   Password: z.string({ required_error: "Password wajib diisi" }).min(1, "Password wajib diisi")
 });
 
@@ -21,7 +21,7 @@ export const ChangePasswordSchema = z
 
 const UserBaseSchema = z.object({
   Name: RequiredText("Nama", 3, 120),
-  Email: z.string().trim().email("Format email tidak valid"),
+  Email: z.string().trim().min(1, "Email wajib diisi").email("Format email tidak valid"),
   Role: z.enum(UserRoleValues, { errorMap: () => ({ message: "Peran tidak valid" }) }),
   StudentNumber: z.string().trim().max(30).optional().nullable(),
   StudyProgram: z.string().trim().max(120).optional().nullable(),

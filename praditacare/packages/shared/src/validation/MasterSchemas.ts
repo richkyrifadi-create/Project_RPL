@@ -4,7 +4,7 @@ import { BooleanLike, RequiredText } from "./Common.js";
 export const UnitSchema = z.object({
   Code: RequiredText("Kode", 2, 20).transform((value) => value.toUpperCase()),
   Name: RequiredText("Nama unit", 3, 120),
-  Email: z.string().trim().email("Format email tidak valid"),
+  Email: z.string().trim().min(1, "Email wajib diisi").email("Format email tidak valid"),
   IsActive: BooleanLike.optional()
 });
 
