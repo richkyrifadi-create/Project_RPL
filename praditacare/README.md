@@ -42,6 +42,10 @@ Buka http://localhost:5173. Vite mem-proxy `/api` ke `http://localhost:4000`.
 
 Dua fitur inti yang ditambahkan secara iteratif (lokasi laporan dan dashboard lokasi paling sering bermasalah), lengkap dengan brief, acceptance criteria, bukti verifikasi, dan skrip demo: [docs/mvp-v1/README.md](docs/mvp-v1/README.md).
 
+## Penyempurnaan MVP (5 user story)
+
+User story, acceptance criteria, lokasi unit test, dan bukti: [docs/mvp-penyempurnaan/README.md](docs/mvp-penyempurnaan/README.md).
+
 ## Unit test
 
 ```bash
@@ -49,7 +53,7 @@ npm test           # menjalankan semua unit test (Vitest), tidak butuh database
 npm run test:watch # mode watch saat mengembangkan
 ```
 
-File test berada di samping kode yang diuji (`*.test.ts`) di `packages/shared/src` dan `apps/api/src`.
+File test berada di samping kode yang diuji (`*.test.ts`) di `packages/shared/src` dan `apps/api/src`. Aturan bisnis per user story ada di `packages/shared/src/rules/` beserta test-nya.
 
 Build produksi: `npm run build`, lalu `npm run start -w @praditacare/api` dan sajikan `apps/web/dist` sebagai file statis.
 

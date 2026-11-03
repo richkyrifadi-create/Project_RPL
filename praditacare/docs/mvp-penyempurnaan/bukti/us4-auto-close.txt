@@ -1,0 +1,9 @@
+# US4-AC4: tutup otomatis tiket Selesai > 7 hari tanpa penilaian
+## Sebelum (PC-2026-000004 Selesai 2 hari lalu → tidak boleh ditutup)
+0 tiket ditutup otomatis
+TicketNumber	Status
+PC-2026-000004	RESOLVED
+## ResolvedAt dimundurkan ke 8 hari lalu
+1 tiket ditutup otomatis
+TicketNumber	Status	Note
+PC-2026-000004	CLOSED	Ditutup otomatis oleh sistem setelah 7 hari tanpa feedback
