@@ -56,6 +56,19 @@ interface SeedTicket {
 }
 
 const Tickets: SeedTicket[] = [
+  // Laporan fasilitas tambahan dengan penulisan lokasi berbeda, untuk dashboard "Lokasi paling sering bermasalah".
+  {
+    Reporter: "siti", Category: "Kerusakan Fasilitas", Priority: "HIGH", CreatedHoursAgo: 6,
+    Title: "AC ruang 301 bocor", Description: "AC di ruang 301 meneteskan air ke meja dosen.", Location: "gedung a, ruang 301"
+  },
+  {
+    Reporter: "andi", Category: "Kerusakan Fasilitas", Priority: "MEDIUM", CreatedHoursAgo: 3,
+    Title: "Proyektor ruang 301 berkedip", Description: "Gambar proyektor berkedip terus saat kuliah pagi.", Location: "Gd. A R.301"
+  },
+  {
+    Reporter: "andi", Category: "Kerusakan Fasilitas", Priority: "LOW", CreatedHoursAgo: 50,
+    Title: "Wastafel toilet mampet", Description: "Wastafel toilet pria lantai 1 mampet dan air menggenang.", Location: "Toilet Pria Gedung B Lantai 1"
+  },
   {
     Reporter: "budi", Category: "Wi-Fi & Jaringan", Priority: "HIGH", CreatedHoursAgo: 2,
     Title: "Wi-Fi gedung B sering terputus", Description: "Sejak pagi Wi-Fi PRADITA-STUDENT di lantai 3 gedung B putus setiap beberapa menit.", Location: "Gedung B Lantai 3"
