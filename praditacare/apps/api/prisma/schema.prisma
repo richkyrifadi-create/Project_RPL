@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  STAFF
+  ADMIN
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_REPORTER
+  RESOLVED
+  CLOSED
+  REJECTED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Unit {
+  Id         Int        @id @default(autoincrement())
+  Code       String     @unique @db.VarChar(20)
+  Name       String     @db.VarChar(120)
+  Email      String     @db.VarChar(191)
+  IsActive   Boolean    @default(true)
+  CreatedAt  DateTime   @default(now())
+  Users      User[]
+  Categories Category[]
+  Tickets    Ticket[]
+}
+
+model User {
+  Id               Int                   @id @default(autoincrement())
+  Name             String                @db.VarChar(120)
+  Email            String                @unique @db.VarChar(191)
+  PasswordHash     String                @db.VarChar(100)
+  Role             UserRole
+  StudentNumber    String?               @unique @db.VarChar(30)
+  StudyProgram     String?               @db.VarChar(120)
+  UnitId           Int?
+  IsActive         Boolean               @default(true)
+  LastLoginAt      DateTime?
+  CreatedAt        DateTime              @default(now())
+  Unit             Unit?                 @relation(fields: [UnitId], references: [Id])
+  ReportedTickets  Ticket[]              @relation("TicketReporter")
+  AssignedTickets  Ticket[]              @relation("TicketAssignee")
+  Comments         TicketComment[]
+  Attachments      TicketAttachment[]
+  StatusChanges    TicketStatusHistory[]
+
+  @@index([Role])
+}
+
+model Category {
+  Id             Int      @id @default(autoincrement())
+  UnitId         Int
+  Name           String   @db.VarChar(120)
+  Description    String   @default("") @db.VarChar(500)
+  SlaHours       Int
+  IsConfidential Boolean  @default(false)
+  IsActive       Boolean  @default(true)
+  CreatedAt      DateTime @default(now())
+  Unit           Unit     @relation(fields: [UnitId], references: [Id])
+  Tickets        Ticket[]
+}
+
+model Ticket {
+  Id              Int                   @id @default(autoincrement())
+  TicketNumber    String                @unique @db.VarChar(20)
+  ReporterId      Int
+  CategoryId      Int
+  UnitId          Int
+  AssigneeId      Int?
+  Title           String                @db.VarChar(200)
+  Description     String                @db.Text
+  Priority        TicketPriority        @default(MEDIUM)
+  Status          TicketStatus          @default(OPEN)
+  IsAnonymous     Boolean               @default(false)
+  DueAt           DateTime
+  FirstResponseAt DateTime?
+  ResolvedAt      DateTime?
+  ClosedAt        DateTime?
+  CreatedAt       DateTime              @default(now())
+  UpdatedAt       DateTime              @updatedAt
+  Reporter        User                  @relation("TicketReporter", fields: [ReporterId], references: [Id])
+  Assignee        User?                 @relation("TicketAssignee", fields: [AssigneeId], references: [Id])
+  Category        Category              @relation(fields: [CategoryId], references: [Id])
+  Unit            Unit                  @relation(fields: [UnitId], references: [Id])
+  Comments        TicketComment[]
+  Attachments     TicketAttachment[]
+  StatusHistory   TicketStatusHistory[]
+  Feedback        TicketFeedback?
+
+  @@index([UnitId, Status])
+  @@index([ReporterId])
+  @@index([AssigneeId])
+  @@index([DueAt])
+}
+
+model TicketSequence {
+  Year       Int @id
+  LastNumber Int @default(0)
+}
+
+model TicketComment {
+  Id          Int                @id @default(autoincrement())
+  TicketId    Int
+  AuthorId    Int
+  Body        String             @db.Text
+  IsInternal  Boolean            @default(false)
+  CreatedAt   DateTime           @default(now())
+  Ticket      Ticket             @relation(fields: [TicketId], references: [Id])
+  Author      User               @relation(fields: [AuthorId], references: [Id])
+  Attachments TicketAttachment[]
+
+  @@index([TicketId])
+}
+
+model TicketAttachment {
+  Id           Int            @id @default(autoincrement())
+  TicketId     Int
+  CommentId    Int?
+  UploadedById Int
+  FileName     String         @db.VarChar(255)
+  StoredPath   String         @db.VarChar(500)
+  MimeType     String         @db.VarChar(100)
+  SizeBytes    Int
+  CreatedAt    DateTime       @default(now())
+  Ticket       Ticket         @relation(fields: [TicketId], references: [Id])
+  Comment      TicketComment? @relation(fields: [CommentId], references: [Id])
+  UploadedBy   User           @relation(fields: [UploadedById], references: [Id])
+
+  @@index([TicketId])
+}
+
+model TicketStatusHistory {
+  Id          Int           @id @default(autoincrement())
+  TicketId    Int
+  FromStatus  TicketStatus?
+  ToStatus    TicketStatus
+  ChangedById Int?
+  Note        String?       @db.VarChar(1000)
+  CreatedAt   DateTime      @default(now())
+  Ticket      Ticket        @relation(fields: [TicketId], references: [Id])
+  ChangedBy   User?         @relation(fields: [ChangedById], references: [Id])
+
+  @@index([TicketId])
+}
+
+model TicketFeedback {
+  Id        Int      @id @default(autoincrement())
+  TicketId  Int      @unique
+  Rating    Int      @db.TinyInt
+  Comment   String?  @db.VarChar(1000)
+  CreatedAt DateTime @default(now())
+  Ticket    Ticket   @relation(fields: [TicketId], references: [Id])
+}
