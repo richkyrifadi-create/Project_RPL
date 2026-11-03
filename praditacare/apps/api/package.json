@@ -12,7 +12,8 @@
     "db:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
     "db:seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
     "db:reset": "dotenv -e ../../.env -- prisma migrate reset --force",
-    "job:auto-close": "tsx --env-file=../../.env src/jobs/RunAutoClose.ts"
+    "job:auto-close": "tsx --env-file=../../.env src/jobs/RunAutoClose.ts",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

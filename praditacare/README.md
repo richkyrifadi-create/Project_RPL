@@ -38,6 +38,15 @@ npm run dev:web
 
 Buka http://localhost:5173. Vite mem-proxy `/api` ke `http://localhost:4000`.
 
+## Unit test
+
+```bash
+npm test           # menjalankan semua unit test (Vitest), tidak butuh database
+npm run test:watch # mode watch saat mengembangkan
+```
+
+File test berada di samping kode yang diuji (`*.test.ts`) di `packages/shared/src` dan `apps/api/src`.
+
 Build produksi: `npm run build`, lalu `npm run start -w @praditacare/api` dan sajikan `apps/web/dist` sebagai file statis.
 
 ## Akun seed
