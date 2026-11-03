@@ -2,12 +2,22 @@ import { z } from "zod";
 import { StatusesRequiringNote } from "../constants/TicketStatusTransitions.js";
 import { TicketPriorityValues } from "../enums/TicketPriority.js";
 import { TicketStatusValues } from "../enums/TicketStatus.js";
+import { LocationMaxLength, LocationMinLength, NormalizeLocation } from "../utils/TicketLocation.js";
 import { BooleanLike, RequiredText } from "./Common.js";
+
+// Lokasi opsional di level skema; kewajiban per kategori dicek dengan ValidateTicketLocation.
+export const LocationField = z
+  .string()
+  .nullish()
+  .transform((value) => NormalizeLocation(value))
+  .refine((value) => value === null || value.length >= LocationMinLength, `Lokasi minimal ${LocationMinLength} karakter`)
+  .refine((value) => value === null || value.length <= LocationMaxLength, `Lokasi maksimal ${LocationMaxLength} karakter`);
 
 export const CreateTicketSchema = z.object({
   Title: RequiredText("Judul", 5, 200),
   Description: RequiredText("Deskripsi", 10, 5000),
   CategoryId: z.coerce.number({ invalid_type_error: "Kategori wajib dipilih" }).int().positive("Kategori wajib dipilih"),
+  Location: LocationField,
   Priority: z.enum(TicketPriorityValues, { errorMap: () => ({ message: "Prioritas tidak valid" }) }).default("MEDIUM"),
   IsAnonymous: BooleanLike.default(false)
 });

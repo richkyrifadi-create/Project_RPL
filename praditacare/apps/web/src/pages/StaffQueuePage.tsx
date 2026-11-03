@@ -170,6 +170,7 @@ export function StaffQueuePage() {
                       <td className="min-w-48 font-medium text-slate-900">
                         {t.Title ?? <span className="italic text-slate-400">Rahasia</span>}
                         {t.IsConfidential && t.Title && <span className="ml-2 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-white">Rahasia</span>}
+                        {t.Location && <p className="text-xs font-normal text-slate-500">{t.Location}</p>}
                       </td>
                       <td className="whitespace-nowrap">
                         {t.CategoryName}

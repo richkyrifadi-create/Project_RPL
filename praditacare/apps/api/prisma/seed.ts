@@ -18,7 +18,7 @@ const Categories = [
   { Unit: "AKD", Name: "Nilai & Transkrip", Description: "Nilai belum keluar, koreksi nilai, transkrip", SlaHours: 72 },
   { Unit: "KEU", Name: "Pembayaran Kuliah", Description: "Verifikasi pembayaran, tagihan, cicilan", SlaHours: 48 },
   { Unit: "KEU", Name: "Beasiswa", Description: "Informasi dan administrasi beasiswa", SlaHours: 120 },
-  { Unit: "SARPRAS", Name: "Kerusakan Fasilitas", Description: "AC, kursi, proyektor, toilet, dan fasilitas kampus lain", SlaHours: 24 },
+  { Unit: "SARPRAS", Name: "Kerusakan Fasilitas", Description: "AC, kursi, proyektor, toilet, dan fasilitas kampus lain", SlaHours: 24, RequiresLocation: true },
   { Unit: "IT", Name: "Akun & Email Kampus", Description: "Reset password, akun LMS, email kampus", SlaHours: 24 },
   { Unit: "IT", Name: "Wi-Fi & Jaringan", Description: "Koneksi internet kampus", SlaHours: 8 },
   { Unit: "KNS", Name: "Konseling Pribadi", Description: "Layanan konseling pribadi dan kesehatan mental", SlaHours: 24, IsConfidential: true }
@@ -45,6 +45,7 @@ interface SeedTicket {
   Category: string;
   Title: string;
   Description: string;
+  Location?: string;
   Priority: TicketPriority;
   IsAnonymous?: boolean;
   CreatedHoursAgo: number;
@@ -57,7 +58,7 @@ interface SeedTicket {
 const Tickets: SeedTicket[] = [
   {
     Reporter: "budi", Category: "Wi-Fi & Jaringan", Priority: "HIGH", CreatedHoursAgo: 2,
-    Title: "Wi-Fi gedung B sering terputus", Description: "Sejak pagi Wi-Fi PRADITA-STUDENT di lantai 3 gedung B putus setiap beberapa menit."
+    Title: "Wi-Fi gedung B sering terputus", Description: "Sejak pagi Wi-Fi PRADITA-STUDENT di lantai 3 gedung B putus setiap beberapa menit.", Location: "Gedung B Lantai 3"
   },
   {
     Reporter: "siti", Category: "KRS & Perwalian", Priority: "MEDIUM", CreatedHoursAgo: 30, Assigned: true,
@@ -76,7 +77,7 @@ const Tickets: SeedTicket[] = [
   },
   {
     Reporter: "budi", Category: "Kerusakan Fasilitas", Priority: "MEDIUM", CreatedHoursAgo: 40, Assigned: true,
-    Title: "AC ruang 301 mati", Description: "AC di ruang 301 tidak menyala sejak minggu lalu sehingga kelas sangat panas.",
+    Title: "AC ruang 301 mati", Description: "AC di ruang 301 tidak menyala sejak minggu lalu sehingga kelas sangat panas.", Location: "Gedung A Ruang 301",
     Steps: [{ To: "IN_PROGRESS", At: 6, By: "STAFF" }],
     Comments: [{ At: 7, By: "STAFF", Body: "Teknisi vendor dijadwalkan datang, suku cadang masih dipesan.", IsInternal: true }]
   },
@@ -119,7 +120,7 @@ const Tickets: SeedTicket[] = [
   },
   {
     Reporter: "budi", Category: "Kerusakan Fasilitas", Priority: "LOW", CreatedHoursAgo: 20,
-    Title: "Kursi rusak di perpustakaan lantai 2", Description: "Ada tiga kursi dengan kaki patah di area baca perpustakaan lantai 2."
+    Title: "Kursi rusak di perpustakaan lantai 2", Description: "Ada tiga kursi dengan kaki patah di area baca perpustakaan lantai 2.", Location: "Perpustakaan Lantai 2"
   }
 ];
 
@@ -184,6 +185,7 @@ async function Main() {
         AssigneeId: seed.Assigned ? staffId : null,
         Title: seed.Title,
         Description: seed.Description,
+        Location: seed.Location ?? null,
         Priority: seed.Priority,
         Status: last?.To ?? "OPEN",
         IsAnonymous: seed.IsAnonymous ?? false,

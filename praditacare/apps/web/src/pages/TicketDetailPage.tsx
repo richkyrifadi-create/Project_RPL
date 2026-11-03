@@ -186,6 +186,11 @@ export function TicketDetailPage() {
           </div>
         ) : (
           <>
+            {ticket.Location && (
+              <p className="mt-3 text-sm text-slate-600">
+                <span className="font-medium text-slate-700">Lokasi:</span> {ticket.Location}
+              </p>
+            )}
             <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-700">{ticket.Description}</p>
             <Attachments Items={ticket.Attachments} />
           </>

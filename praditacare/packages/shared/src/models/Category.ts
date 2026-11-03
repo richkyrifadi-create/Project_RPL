@@ -6,6 +6,7 @@ export interface Category {
   Description: string;
   SlaHours: number;
   IsConfidential: boolean;
+  RequiresLocation: boolean;
   IsActive: boolean;
   CreatedAt: string;
 }

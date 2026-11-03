@@ -9,6 +9,7 @@ import {
   ChangeStatusSchema,
   CreateCommentSchema,
   CreateTicketSchema,
+  ValidateTicketLocation,
   FeedbackSchema,
   IdParamSchema,
   ReopenTicketSchema,
@@ -69,7 +70,11 @@ TicketRoutes.get(
     if (query.From) filters.push({ CreatedAt: { gte: JakartaStart(query.From) } });
     if (query.To) filters.push({ CreatedAt: { lte: JakartaEnd(query.To) } });
     if (query.Keyword) {
-      const content: Prisma.TicketWhereInput[] = [{ Title: { contains: query.Keyword } }, { Description: { contains: query.Keyword } }];
+      const content: Prisma.TicketWhereInput[] = [
+        { Title: { contains: query.Keyword } },
+        { Description: { contains: query.Keyword } },
+        { Location: { contains: query.Keyword } }
+      ];
       filters.push({
         OR: [
           { TicketNumber: { contains: query.Keyword } },
@@ -109,6 +114,8 @@ TicketRoutes.post(
     const user = GetAuthUser(req);
     const category = await prisma.category.findFirst({ where: { Id: req.body.CategoryId, IsActive: true, Unit: { IsActive: true } } });
     if (!category) throw new HttpError(422, "Kategori tidak tersedia", { CategoryId: ["Kategori tidak tersedia"] });
+    const locationError = ValidateTicketLocation(category.RequiresLocation, req.body.Location);
+    if (locationError) throw new HttpError(422, locationError, { Location: [locationError] });
     const files = GetUploadedFiles(req.files);
     const ticketId = await prisma.$transaction(async (tx) => {
       const now = new Date();
@@ -120,6 +127,7 @@ TicketRoutes.post(
           UnitId: category.UnitId,
           Title: req.body.Title,
           Description: req.body.Description,
+          Location: req.body.Location,
           Priority: req.body.Priority,
           IsAnonymous: req.body.IsAnonymous,
           DueAt: new Date(now.getTime() + category.SlaHours * 3600 * 1000),

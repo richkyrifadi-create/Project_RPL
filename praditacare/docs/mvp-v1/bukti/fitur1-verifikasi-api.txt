@@ -1,0 +1,15 @@
+PASS kategori Kerusakan Fasilitas mewajibkan lokasi (RequiresLocation=true)
+PASS kategori KRS & Perwalian tidak mewajibkan lokasi
+PASS AC1 tanpa lokasi -> 422
+PASS AC1 pesan error ada di field Location
+PASS AC1 lokasi berisi spasi saja juga ditolak -> 422
+PASS AC2 dengan lokasi -> 201
+PASS AC2 lokasi tersimpan rapi
+PASS AC3 kategori non-fasilitas tanpa lokasi -> 201
+PASS AC3 Location bernilai null
+PASS AC4 staf Sarpras melihat lokasi di detail
+PASS AC4 pencarian kata kunci menemukan tiket berdasarkan lokasi
+PASS AC5 lokasi > 150 karakter -> 422
+PASS AC6 admin mengaktifkan wajib lokasi untuk Wi-Fi
+
+13 PASS, 0 FAIL
