@@ -1,0 +1,22 @@
+PASS ganti password: password lama salah -> 422 
+PASS ganti password: password baru < 8 -> 422 
+PASS ganti password berhasil 
+PASS login dengan password baru 
+PASS ubah prioritas -> URGENT 
+PASS prioritas tidak valid -> 422 
+PASS pindah kategori -> unit Akademik 
+PASS pindah kategori: DueAt tidak berubah 
+PASS staf IT tidak lagi melihat tiket yang dipindah -> 404 
+PASS reset password user oleh admin 
+PASS login dengan password hasil reset 
+PASS nonaktifkan kategori 
+PASS kategori nonaktif tidak muncul untuk mahasiswa 
+PASS aktifkan kembali kategori 
+PASS SLA kategori 0 jam -> 422 
+PASS Id tiket bukan angka -> 422 
+PASS tiket tidak ada -> 404 
+PASS JSON rusak -> 400 
+PASS filter status tidak dikenal -> 422 
+PASS route tidak ada -> 404 
+
+20 PASS, 0 FAIL

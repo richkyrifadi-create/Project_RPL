@@ -1,0 +1,20 @@
+PASS login kosong menampilkan pesan field wajib
+PASS login salah menampilkan pesan error
+PASS server tidak terjangkau -> pesan 'Tidak dapat terhubung'
+PASS buat tiket: kategori gagal dimuat -> error state
+PASS buat tiket: tombol Coba lagi memuat form
+PASS lampiran .docx ditolak sebelum dikirim
+PASS lampiran 0 byte ditolak
+PASS tiket saya kosong -> empty state
+PASS respons lambat -> spinner 'Memuat...'
+PASS tiket tidak ditemukan -> error state + Coba lagi
+PASS /admin/unit: gagal dimuat -> error state
+PASS /admin/unit: Coba lagi memuat tabel
+PASS /admin/kategori: gagal dimuat -> error state
+PASS /admin/kategori: Coba lagi memuat tabel
+PASS /admin/user: gagal dimuat -> error state
+PASS /admin/user: Coba lagi memuat tabel
+PASS /admin/user tanpa hasil filter -> empty state
+PASS dashboard gagal dimuat -> pesan error
+
+18 PASS, 0 FAIL

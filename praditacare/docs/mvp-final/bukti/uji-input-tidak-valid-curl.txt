@@ -1,0 +1,11 @@
+Uji manual dengan curl ke API (localhost:4000), token mahasiswa budi:
+GET /tickets/abc                -> 422
+GET /tickets/999999             -> 404
+GET /tickets?Page=-1            -> 422
+GET /tickets?Status=XYZ         -> 422
+GET /attachments/abc/download   -> 422
+GET /nope                       -> 404
+POST /auth/login body "{bad"    -> 400 {"Message":"Format JSON tidak valid"}
+POST /auth/login body "{}"      -> 422 {"Message":"Data yang dikirim tidak valid","Errors":{"Email":["Email wajib diisi"],"Password":["Password wajib diisi"]}}
+POST /tickets lampiran 6 MB     -> 413 {"Message":"Ukuran file maksimal 5 MB"}
+Authorization: Bearer xx        -> 401 {"Message":"Sesi berakhir, silakan login kembali"}

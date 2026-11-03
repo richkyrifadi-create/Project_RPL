@@ -46,6 +46,10 @@ Dua fitur inti yang ditambahkan secara iteratif (lokasi laporan dan dashboard lo
 
 User story, acceptance criteria, lokasi unit test, dan bukti: [docs/mvp-penyempurnaan/README.md](docs/mvp-penyempurnaan/README.md).
 
+## MVP final
+
+Petunjuk menjalankan: [../HowToRun.md](../HowToRun.md). Checklist fitur dan status pengujian: [../checklist_mvp.md](../checklist_mvp.md). Video demo alur lengkap: [../demo.mp4](../demo.mp4). Log pengujian: [docs/mvp-final/bukti/](docs/mvp-final/bukti/).
+
 ## Unit test
 
 ```bash

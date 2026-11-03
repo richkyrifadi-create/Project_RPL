@@ -1,0 +1,16 @@
+Locations (admin, sebelum): [{"Location":"Gedung A Ruang 301","TicketCount":3,"ActiveCount":3,"Categories":["Kerusakan Fasilitas"]},{"Location":"Gedung B Lantai 3","TicketCount":1,"ActiveCount":1,"Categories":["Wi-Fi & Jaringan"]},{"Location":"Perpustakaan Lantai 2","TicketCount":1,"ActiveCount":1,"Categories":["Kerusakan Fasilitas"]},{"Location":"Toilet Pria Gedung B Lantai 1","TicketCount":1,"ActiveCount":1,"Categories":["Kerusakan Fasilitas"]}]
+PASS dashboard admin berisi daftar Locations
+PASS AC1 tiga penulisan berbeda ruang 301 digabung jadi satu baris (>= 3 laporan)
+PASS AC1 tidak ada baris duplikat untuk ruang 301
+PASS AC2 urut menurun berdasarkan jumlah laporan
+PASS AC2 maksimal 5 lokasi
+PASS AC2 lokasi teratas adalah ruang 301
+PASS AC3 laporan baru di ruang 301 dibuat
+PASS AC3 jumlah laporan ruang 301 naik 1
+PASS AC3 jumlah aktif ruang 301 naik 1
+PASS AC4 staf Sarpras melihat lokasi fasilitas
+PASS AC4 staf Sarpras tidak melihat lokasi Wi-Fi milik unit IT
+PASS AC4 staf Akademik tidak punya lokasi (kategori akademik tanpa lokasi)
+PASS AC5 mahasiswa akses dashboard -> 403
+
+13 PASS, 0 FAIL
