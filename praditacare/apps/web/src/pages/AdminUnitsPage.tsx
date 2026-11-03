@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UnitSchema, type Unit } from "@praditacare/shared";
 import { Api, ApiError } from "../api/Client";
-import { Alert, ConfirmDialog, EmptyState, FieldError, Modal, Spinner } from "../components/Ui";
+import { Alert, ConfirmDialog, EmptyState, ErrorMessage, ErrorState, FieldError, Modal, Spinner } from "../components/Ui";
 
 const Empty = { Code: "", Name: "", Email: "" };
 
@@ -13,8 +13,15 @@ export function AdminUnitsPage() {
   const [toggle, setToggle] = useState<Unit | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const Load = () => Api.Get<Unit[]>("/units", { IncludeInactive: true }).then(setUnits);
+  const Load = () => {
+    setLoadError(null);
+    return Api.Get<Unit[]>("/units", { IncludeInactive: true })
+      .then(setUnits)
+      .catch((err) => setLoadError(ErrorMessage(err, "Gagal memuat unit")));
+  };
   useEffect(() => {
     Load();
   }, []);
@@ -48,7 +55,11 @@ export function AdminUnitsPage() {
     try {
       await Api.Send("PUT", `/units/${toggle.Id}`, { Code: toggle.Code, Name: toggle.Name, Email: toggle.Email, IsActive: !toggle.IsActive });
       setToggle(null);
+      setError(null);
       await Load();
+    } catch (err) {
+      setToggle(null);
+      setError(ErrorMessage(err, "Gagal mengubah status unit"));
     } finally {
       setBusy(false);
     }
@@ -63,8 +74,11 @@ export function AdminUnitsPage() {
         </button>
       </div>
       {message && <Alert Kind="success">{message}</Alert>}
+      {error && <Alert>{error}</Alert>}
       <div className="card overflow-x-auto">
-        {!units ? (
+        {loadError ? (
+          <ErrorState Message={loadError} OnRetry={Load} />
+        ) : !units ? (
           <Spinner />
         ) : units.length === 0 ? (
           <EmptyState Title="Belum ada unit" />

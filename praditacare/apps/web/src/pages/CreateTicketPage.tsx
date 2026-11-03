@@ -4,14 +4,14 @@ import {
   CreateTicketSchema,
   TicketPriorityLabels,
   TicketPriorityValues,
-  UploadLimits,
+  ValidateUploadFiles,
   ValidateTicketLocation,
   type Category,
   type Ticket,
   type TicketPriority
 } from "@praditacare/shared";
 import { Api, ApiError } from "../api/Client";
-import { Alert, FieldError, Spinner } from "../components/Ui";
+import { Alert, EmptyState, ErrorMessage, ErrorState, FieldError, Spinner } from "../components/Ui";
 
 function FormatSla(hours: number) {
   return hours >= 24 && hours % 24 === 0 ? `${hours / 24} hari` : `${hours} jam`;
@@ -31,19 +31,28 @@ export function CreateTicketPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    Api.Get<Category[]>("/categories").then(setCategories).catch(() => setError("Gagal memuat kategori"));
-  }, []);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const LoadCategories = () => {
+    setLoadError(null);
+    Api.Get<Category[]>("/categories")
+      .then(setCategories)
+      .catch((err) => setLoadError(ErrorMessage(err, "Gagal memuat kategori")));
+  };
+  useEffect(LoadCategories, []);
 
   const selected = useMemo(() => categories?.find((c) => String(c.Id) === categoryId), [categories, categoryId]);
 
-  function PickFiles(list: FileList | null) {
+  function PickFiles(list: FileList | null): boolean {
     const picked = Array.from(list ?? []);
-    const invalid = picked.find((f) => !(UploadLimits.AllowedMimeTypes as readonly string[]).includes(f.type));
-    if (invalid) return setError(`File "${invalid.name}" tidak didukung. Hanya JPG, PNG, dan PDF.`);
-    if (picked.length > UploadLimits.MaxFilesPerUpload) return setError("Maksimal 5 file per unggahan.");
+    const uploadError = ValidateUploadFiles(picked);
+    if (uploadError) {
+      setFiles([]);
+      setError(uploadError);
+      return false;
+    }
     setError(null);
     setFiles(picked);
+    return true;
   }
 
   async function Submit(e: FormEvent) {
@@ -85,7 +94,14 @@ export function CreateTicketPage() {
     }
   }
 
+  if (loadError) return <div className="card"><ErrorState Message={loadError} OnRetry={LoadCategories} /></div>;
   if (!categories) return <Spinner />;
+  if (categories.length === 0)
+    return (
+      <div className="card">
+        <EmptyState Title="Belum ada kategori aktif" Description="Laporan belum bisa dibuat. Hubungi admin kampus untuk mengaktifkan kategori." />
+      </div>
+    );
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
@@ -179,7 +195,9 @@ export function CreateTicketPage() {
           <label className="label" htmlFor="files">
             Lampiran (opsional)
           </label>
-          <input id="files" type="file" multiple accept=".jpg,.jpeg,.png,.pdf" className="input" onChange={(e) => PickFiles(e.target.files)} />
+          <input id="files" type="file" multiple accept=".jpg,.jpeg,.png,.pdf" className="input" onChange={(e) => {
+              if (!PickFiles(e.target.files)) e.target.value = "";
+            }} />
           <p className="mt-1 text-xs text-slate-500">Maksimal 5 file, JPG, PNG, atau PDF.</p>
           {files.length > 0 && <p className="mt-1 text-xs text-slate-600">{files.map((f) => f.name).join(", ")}</p>}
         </div>
