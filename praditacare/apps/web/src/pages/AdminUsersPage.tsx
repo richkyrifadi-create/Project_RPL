@@ -11,7 +11,7 @@ import {
   type UserRole
 } from "@praditacare/shared";
 import { Api, ApiError } from "../api/Client";
-import { Alert, ConfirmDialog, FieldError, Modal, Spinner } from "../components/Ui";
+import { Alert, ConfirmDialog, EmptyState, ErrorMessage, ErrorState, FieldError, Modal, Spinner } from "../components/Ui";
 import { ActiveBadge } from "./AdminUnitsPage";
 
 interface FormState {
@@ -41,12 +41,20 @@ export function AdminUsersPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const Load = () => Api.Get<User[]>("/users", { Role: roleFilter, UnitId: unitFilter }).then(setUsers);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const Load = () => {
+    setLoadError(null);
+    return Api.Get<User[]>("/users", { Role: roleFilter, UnitId: unitFilter })
+      .then(setUsers)
+      .catch((err) => setLoadError(ErrorMessage(err, "Gagal memuat user")));
+  };
   useEffect(() => {
+    setUsers(null);
     Load();
   }, [roleFilter, unitFilter]);
   useEffect(() => {
-    Api.Get<Unit[]>("/units").then(setUnits);
+    Api.Get<Unit[]>("/units").then(setUnits).catch(() => setUnits([]));
   }, []);
 
   function Open(user: User | "new") {
@@ -122,6 +130,9 @@ export function AdminUsersPage() {
       await Api.Send("POST", `/users/${resetting.Id}/reset-password`, parsed.data);
       setMessage(`Password ${resetting.Name} berhasil direset.`);
       setResetting(null);
+    } catch (err) {
+      if (err instanceof ApiError && err.Errors) setErrors(err.Errors);
+      else setErrors({ NewPassword: [ErrorMessage(err, "Gagal mereset password")] });
     } finally {
       setBusy(false);
     }
@@ -156,8 +167,12 @@ export function AdminUsersPage() {
       {message && <Alert Kind="success">{message}</Alert>}
       {error && <Alert>{error}</Alert>}
       <div className="card overflow-x-auto">
-        {!users ? (
+        {loadError ? (
+          <ErrorState Message={loadError} OnRetry={Load} />
+        ) : !users ? (
           <Spinner />
+        ) : users.length === 0 ? (
+          <EmptyState Title="Tidak ada user" Description="Tidak ada user yang cocok dengan filter peran dan unit." />
         ) : (
           <table className="table-base">
             <thead>

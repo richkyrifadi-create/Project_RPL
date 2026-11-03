@@ -20,6 +20,25 @@ export function EmptyState({ Title, Description, Action }: { Title: string; Desc
   );
 }
 
+export function ErrorState({ Message, OnRetry }: { Message: string; OnRetry?: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center" role="alert">
+      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-xl text-red-600">!</div>
+      <p className="font-medium text-slate-800">Data gagal dimuat</p>
+      <p className="max-w-sm text-sm text-slate-500">{Message}</p>
+      {OnRetry && (
+        <button className="btn-secondary btn-sm mt-3" onClick={OnRetry}>
+          Coba lagi
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function ErrorMessage(err: unknown, fallback: string): string {
+  return err instanceof Error && err.message ? err.message : fallback;
+}
+
 export function Alert({ Kind = "error", children }: { Kind?: "error" | "success" | "info"; children: ReactNode }) {
   const colors = {
     error: "border-red-200 bg-red-50 text-red-800",

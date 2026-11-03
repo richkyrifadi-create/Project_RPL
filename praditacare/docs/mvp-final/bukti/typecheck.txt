@@ -1,0 +1,21 @@
+
+> praditacare@1.0.0 typecheck
+> npm run build:shared && npm run typecheck -w @praditacare/api && npm run typecheck -w @praditacare/web
+
+
+> praditacare@1.0.0 build:shared
+> npm run build -w @praditacare/shared
+
+
+> @praditacare/shared@1.0.0 build
+> tsc -p tsconfig.json
+
+
+> @praditacare/api@1.0.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @praditacare/web@1.0.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+typecheck OK (shared, api, web): 0 error

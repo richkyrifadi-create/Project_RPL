@@ -1,0 +1,109 @@
+
+> praditacare@1.0.0 test
+> vitest run
+
+
+ RUN  v3.2.4 /home/claude/project_rpl/praditacare
+
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CalculateDueAt > US1-AC2: batas waktu = waktu dibuat + SLA kategori (jam) 1ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CalculateDueAt > US1-AC2: SLA melewati pergantian bulan dihitung benar 0ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CalculateDueAt > US1-AC2: SLA tidak valid ditolak 1ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 FormatTicketNumber > US1-AC3: format PC-YYYY-NNNNNN dengan nol di depan 0ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 FormatTicketNumber > US1-AC3: nomor urut 0, negatif, atau lebih dari 6 digit ditolak 0ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CheckNewTicket > menerima kategori aktif dengan data lengkap 0ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CheckNewTicket > US1-AC4: kategori tidak ada, nonaktif, atau unitnya nonaktif ditolak pada field CategoryId 1ms
+ ✓ packages/shared/src/rules/TicketCreationRules.test.ts > US1 CheckNewTicket > US1-AC5: kategori wajib lokasi tanpa lokasi ditolak pada field Location 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 CanGiveFeedback > US4-AC1: tiket Selesai yang belum dinilai boleh dinilai 1ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 CanGiveFeedback > US4-AC1: tiket yang belum Selesai tidak bisa dinilai 1ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 CanGiveFeedback > US4-AC1: penilaian hanya sekali 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 ValidateFeedbackComment & FeedbackSchema > US4-AC3: rating 1-2 tanpa alasan ditolak 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 ValidateFeedbackComment & FeedbackSchema > US4-AC3: rating 1-2 dengan alasan, atau rating 3-5 tanpa komentar, diterima 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 ValidateFeedbackComment & FeedbackSchema > US4-AC2 & AC3: skema menolak rating di luar 1-5 dan menaruh error alasan di field Comment 2ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 Tutup otomatis > US4-AC4: ambang tutup otomatis = 7 hari sebelum sekarang 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 Tutup otomatis > US4-AC4: tiket Selesai > 7 hari tanpa penilaian ditutup 0ms
+ ✓ packages/shared/src/rules/FeedbackRules.test.ts > US4 Tutup otomatis > US4-AC4: belum 7 hari, sudah dinilai, atau bukan Selesai tidak ditutup 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > NormalizeLocation > membuang spasi berlebih di awal, akhir, dan tengah 1ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > NormalizeLocation > mengubah string kosong atau spasi saja menjadi null 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC1: kategori fasilitas tanpa lokasi ditolak 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC2: kategori fasilitas dengan lokasi valid diterima 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC3: kategori non-fasilitas boleh tanpa lokasi 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > menolak lokasi yang terlalu pendek atau terlalu panjang 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > merapikan lokasi dari form 1ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > lokasi kosong dari form menjadi null (bukan string kosong) 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > lokasi terlalu panjang menghasilkan error pada field Location 1ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > menyamakan huruf besar/kecil, tanda baca, dan spasi 1ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > menyeragamkan singkatan umum (Gd., Lt., R.) 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > lokasi kosong atau hanya tanda baca menghasilkan null 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC1: penulisan berbeda untuk lokasi yang sama dihitung jadi satu 2ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC2: diurutkan dari laporan terbanyak dan dibatasi 5 lokasi 7ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC3: menghitung tiket yang masih aktif secara terpisah 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC4: tiket tanpa lokasi dan tiket kategori rahasia tidak dihitung 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > menampilkan penulisan yang paling sering dipakai dan daftar kategorinya 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > mengembalikan array kosong bila belum ada lokasi 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanReopen > US3-AC2: tiket Selesai dalam 7 hari boleh dibuka kembali 1ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanReopen > US3-AC2: lewat 7 hari ditolak 1ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanReopen > US3-AC2: status selain Selesai tidak bisa dibuka kembali 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanReopen > menerima ResolvedAt berupa string ISO dari API (dipakai di web) 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 ShouldResumeAfterReply > US3-AC1: balasan pelapor saat Menunggu Pelapor mengembalikan ke Diproses 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 ShouldResumeAfterReply > US3-AC1: komentar staf atau status lain tidak mengubah status 1ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanComment > pelapor dan staf boleh berkomentar di tiket aktif 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanComment > US3-AC3: tiket Ditutup/Ditolak tidak bisa dikomentari 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 CanComment > US3-AC3: mahasiswa lain tidak bisa berkomentar 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 ResolveCommentInternal & CountsAsFirstResponse > US3-AC4: mahasiswa tidak bisa membuat komentar internal 0ms
+ ✓ packages/shared/src/rules/ReporterInteractionRules.test.ts > US3 ResolveCommentInternal & CountsAsFirstResponse > US3-AC5: hanya komentar publik pertama staf yang dihitung sebagai respons pertama 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: OPEN → IN_PROGRESS diizinkan (dengan catatan) 1ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: IN_PROGRESS → WAITING_REPORTER diizinkan (dengan catatan) 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: WAITING_REPORTER → IN_PROGRESS diizinkan (dengan catatan) 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: IN_PROGRESS → RESOLVED diizinkan (dengan catatan) 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: OPEN → REJECTED diizinkan (dengan catatan) 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: OPEN → RESOLVED ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: OPEN → WAITING_REPORTER ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: RESOLVED → IN_PROGRESS ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: CLOSED → IN_PROGRESS ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > US2-AC1: REJECTED → OPEN ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: alur status > mahasiswa tidak bisa mengubah status 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: catatan wajib > US2-AC2: RESOLVED tanpa catatan ditolak 1ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: catatan wajib > US2-AC2: REJECTED tanpa catatan ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: catatan wajib > US2-AC2: WAITING_REPORTER tanpa catatan ditolak 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: catatan wajib > US2-AC2: Diproses tidak wajib catatan 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: petugas otomatis > US2-AC3: staf unit terkait yang memproses tiket tanpa petugas menjadi petugas 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: petugas otomatis > US2-AC3: tidak auto-assign bila sudah ada petugas, aktor admin, atau staf unit lain 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 PlanStatusChange: petugas otomatis > US2-AC3: tidak auto-assign untuk status selain Diproses 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 StatusTimestampsFor > US2-AC4: Selesai mencatat ResolvedAt, Ditutup/Ditolak mencatat ClosedAt 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 StatusTimestampsFor > US2-AC4: respons pertama hanya dicatat sekali 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 CheckAssignee > US2-AC5: staf aktif unit yang sama diterima, melepas petugas selalu boleh 0ms
+ ✓ packages/shared/src/rules/StatusChangeRules.test.ts > US2 CheckAssignee > US2-AC5: staf unit lain, staf nonaktif, bukan staf, atau user tidak ada ditolak 0ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Pelapor anonim > US5-AC1: pelapor sendiri tetap melihat namanya 1ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Pelapor anonim > US5-AC1: staf, admin, dan mahasiswa lain melihat 'Anonim' 0ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Pelapor anonim > tiket tidak anonim menampilkan nama pelapor ke staf 0ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Kategori rahasia > US5-AC2: isi tiket rahasia disembunyikan dari admin saja 0ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Kategori rahasia > US5-AC3: bila isi disembunyikan, nama pelapor ikut disembunyikan walau tidak anonim 0ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Kategori rahasia > US5-AC5: tiket rahasia tidak dihitung di dashboard lokasi 1ms
+ ✓ packages/shared/src/rules/PrivacyRules.test.ts > US5 Komentar internal > US5-AC4: mahasiswa tidak pernah melihat komentar internal 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > tanpa lampiran tetap valid 1ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menerima JPG, PNG, dan PDF 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menolak lebih dari 5 file 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menolak jenis file selain JPG/PNG/PDF 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menolak ekstensi palsu walaupun MIME diizinkan 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menolak file kosong (0 byte) 0ms
+ ✓ packages/shared/src/rules/UploadRules.test.ts > ValidateUploadFiles (lampiran tiket & komentar) > menolak file melebihi batas MB, tepat di batas diterima 0ms
+ ✓ packages/shared/src/validation/LoginSchema.test.ts > LoginSchema (validasi form login) > form kosong: pesan pertama adalah 'wajib diisi' 2ms
+ ✓ packages/shared/src/validation/LoginSchema.test.ts > LoginSchema (validasi form login) > email hanya spasi dianggap kosong 1ms
+ ✓ packages/shared/src/validation/LoginSchema.test.ts > LoginSchema (validasi form login) > format email salah ditolak 0ms
+ ✓ packages/shared/src/validation/LoginSchema.test.ts > LoginSchema (validasi form login) > email dirapikan (trim) dan data valid diterima 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > ON_TRACK bila sisa waktu masih lebih dari 25% SLA 1ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > AT_RISK bila sisa waktu kurang dari 25% SLA 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > OVERDUE bila tenggat lewat dan tiket belum selesai 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > MET bila diselesaikan sebelum tenggat 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > BREACHED bila diselesaikan setelah tenggat 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetRemainingText > menampilkan sisa waktu dalam jam dan menit 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetRemainingText > menampilkan keterlambatan dalam hari dan jam 0ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > mengizinkan alur normal OPEN → IN_PROGRESS → RESOLVED 1ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > menolak loncat langsung OPEN → RESOLVED 0ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > tidak ada transisi dari status final 0ms
+
+ Test Files  11 passed (11)
+      Tests  96 passed (96)
+   Start at  19:37:23
+   Duration  925ms (transform 298ms, setup 0ms, collect 585ms, tests 58ms, environment 1ms, prepare 622ms)
+

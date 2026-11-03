@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CategorySchema, type Category, type Unit } from "@praditacare/shared";
 import { Api, ApiError } from "../api/Client";
-import { Alert, ConfirmDialog, FieldError, Modal, Spinner } from "../components/Ui";
+import { Alert, ConfirmDialog, EmptyState, ErrorMessage, ErrorState, FieldError, Modal, Spinner } from "../components/Ui";
 import { ActiveBadge } from "./AdminUnitsPage";
 
 interface FormState {
@@ -25,10 +25,23 @@ export function AdminCategoriesPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const Load = () => Api.Get<Category[]>("/categories", { IncludeInactive: true }).then(setCategories);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const Load = () => {
+    setLoadError(null);
+    return Promise.all([
+      Api.Get<Category[]>("/categories", { IncludeInactive: true }),
+      Api.Get<Unit[]>("/units", { IncludeInactive: true })
+    ])
+      .then(([c, u]) => {
+        setCategories(c);
+        setUnits(u);
+      })
+      .catch((err) => setLoadError(ErrorMessage(err, "Gagal memuat kategori")));
+  };
   useEffect(() => {
     Load();
-    Api.Get<Unit[]>("/units", { IncludeInactive: true }).then(setUnits);
   }, []);
 
   function Open(category: Category | "new") {
@@ -72,7 +85,11 @@ export function AdminCategoriesPage() {
       const { UnitId, Name, Description, SlaHours, IsConfidential, RequiresLocation, IsActive } = toggle;
       await Api.Send("PUT", `/categories/${toggle.Id}`, { UnitId, Name, Description, SlaHours, IsConfidential, RequiresLocation, IsActive: !IsActive });
       setToggle(null);
+      setError(null);
       await Load();
+    } catch (err) {
+      setToggle(null);
+      setError(ErrorMessage(err, "Gagal mengubah status kategori"));
     } finally {
       setBusy(false);
     }
@@ -87,9 +104,14 @@ export function AdminCategoriesPage() {
         </button>
       </div>
       {message && <Alert Kind="success">{message}</Alert>}
+      {error && <Alert>{error}</Alert>}
       <div className="card overflow-x-auto">
-        {!categories ? (
+        {loadError ? (
+          <ErrorState Message={loadError} OnRetry={Load} />
+        ) : !categories ? (
           <Spinner />
+        ) : categories.length === 0 ? (
+          <EmptyState Title="Belum ada kategori" Description="Tambahkan kategori agar mahasiswa bisa membuat laporan." />
         ) : (
           <table className="table-base">
             <thead>

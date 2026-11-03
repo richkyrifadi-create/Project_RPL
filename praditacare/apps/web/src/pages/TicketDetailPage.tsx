@@ -11,7 +11,7 @@ import {
   TicketPriorityValues,
   TicketStatusLabels,
   TicketStatusTransitions,
-  UploadLimits,
+  ValidateUploadFiles,
   type Category,
   type Ticket,
   type TicketAttachment,
@@ -24,7 +24,7 @@ import {
 import { Api, ApiError } from "../api/Client";
 import { UseAuth } from "../auth/AuthContext";
 import { PriorityText, SlaBadge, StatusBadge } from "../components/Badges";
-import { Alert, ConfirmDialog, FieldError, Spinner } from "../components/Ui";
+import { Alert, ConfirmDialog, ErrorState, FieldError, Spinner } from "../components/Ui";
 
 type TimelineItem = { Kind: "comment"; At: string; Comment: TicketComment } | { Kind: "status"; At: string; History: TicketStatusHistory };
 
@@ -43,7 +43,7 @@ function Attachments({ Items }: { Items: TicketAttachment[] }) {
         <button
           key={a.Id}
           className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-700 hover:bg-slate-200"
-          onClick={() => Api.Download(`/attachments/${a.Id}/download`, a.FileName).catch((e) => alert(e.message))}
+          onClick={() => Api.Download(`/attachments/${a.Id}/download`, a.FileName).catch((e) => window.alert(e instanceof Error ? e.message : "Gagal mengunduh lampiran"))}
         >
           📎 {a.FileName} <span className="text-slate-400">({Math.ceil(a.SizeBytes / 1024)} KB)</span>
         </button>
@@ -79,6 +79,7 @@ export function TicketDetailPage() {
   const isHandler = User?.Role === "STAFF" || User?.Role === "ADMIN";
 
   const Load = useCallback(async () => {
+    setError(null);
     try {
       const t = await Api.Get<Ticket>(`/tickets/${Id}`);
       setTicket(t);
@@ -111,7 +112,17 @@ export function TicketDetailPage() {
     return items.sort((a, b) => a.At.localeCompare(b.At));
   }, [comments, history]);
 
-  if (error && !ticket) return <Alert>{error}</Alert>;
+  if (error && !ticket)
+    return (
+      <div className="space-y-4">
+        <Link to={isHandler ? "/antrian" : "/tiket-saya"} className="text-sm text-brand-600 hover:underline">
+          ← Kembali
+        </Link>
+        <div className="card">
+          <ErrorState Message={error} OnRetry={Load} />
+        </div>
+      </div>
+    );
   if (!ticket || !User) return <Spinner />;
 
   const isFinal = ticket.Status === "CLOSED" || ticket.Status === "REJECTED";
@@ -199,6 +210,7 @@ export function TicketDetailPage() {
       </div>
 
       {notice && <Alert Kind="success">{notice}</Alert>}
+      {error && <Alert>{error}</Alert>}
 
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
@@ -378,7 +390,8 @@ function CommentForm({ Ticket, IsHandler, OnPosted }: { Ticket: Ticket; IsHandle
   async function Submit(e: FormEvent) {
     e.preventDefault();
     if (!body.trim()) return setError("Komentar wajib diisi");
-    if (files.length > UploadLimits.MaxFilesPerUpload) return setError("Maksimal 5 file per unggahan");
+    const uploadError = ValidateUploadFiles(files);
+    if (uploadError) return setError(uploadError);
     const form = new FormData();
     form.append("Body", body);
     form.append("IsInternal", String(isInternal));
@@ -458,7 +471,7 @@ function FeedbackForm({ Ticket, OnDone }: { Ticket: Ticket; OnDone: () => Promis
       {error && <Alert>{error}</Alert>}
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
-          <button type="button" key={n} onClick={() => setRating(n)} className={`text-3xl ${n <= rating ? "text-amber-400" : "text-slate-300"}`}>
+          <button type="button" key={n} aria-label={`Rating ${n}`} aria-pressed={n === rating} onClick={() => setRating(n)} className={`text-3xl ${n <= rating ? "text-amber-400" : "text-slate-300"}`}>
             ★
           </button>
         ))}

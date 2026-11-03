@@ -34,3 +34,4 @@ export * from "./rules/StatusChangeRules.js";
 export * from "./rules/ReporterInteractionRules.js";
 export * from "./rules/FeedbackRules.js";
 export * from "./rules/PrivacyRules.js";
+export * from "./rules/UploadRules.js";
