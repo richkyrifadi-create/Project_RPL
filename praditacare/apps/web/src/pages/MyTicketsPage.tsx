@@ -72,7 +72,8 @@ export function MyTicketsPage() {
                     </div>
                     <p className="font-medium text-slate-900">{t.Title}</p>
                     <p className="text-xs text-slate-500">
-                      {t.CategoryName} · {FormatDate(t.CreatedAt)}
+                      {t.CategoryName}
+                      {t.Location ? ` · ${t.Location}` : ""} · {FormatDate(t.CreatedAt)}
                     </p>
                   </Link>
                 </li>
@@ -94,7 +95,10 @@ export function MyTicketsPage() {
                   {data.Items.map((t) => (
                     <tr key={t.Id} className="cursor-pointer hover:bg-slate-50" onClick={() => navigate(`/tiket/${t.Id}`)}>
                       <td className="font-mono text-xs">{t.TicketNumber}</td>
-                      <td className="font-medium text-slate-900">{t.Title}</td>
+                      <td className="font-medium text-slate-900">
+                        {t.Title}
+                        {t.Location && <p className="text-xs font-normal text-slate-500">{t.Location}</p>}
+                      </td>
                       <td>{t.CategoryName}</td>
                       <td>
                         <StatusBadge Status={t.Status} />

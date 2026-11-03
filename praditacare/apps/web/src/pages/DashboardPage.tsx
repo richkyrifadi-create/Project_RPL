@@ -124,6 +124,38 @@ export function DashboardPage() {
               )}
             </div>
           </div>
+          <div className="card overflow-hidden">
+            <div className="border-b border-slate-100 px-4 py-3">
+              <h2 className="font-semibold text-slate-900">Lokasi paling sering bermasalah</h2>
+              <p className="text-xs text-slate-500">5 lokasi dengan laporan terbanyak pada rentang ini. Penulisan berbeda (misal "Gd. A R.301") dihitung sebagai lokasi yang sama.</p>
+            </div>
+            {data.Locations.length === 0 ? (
+              <EmptyState Title="Belum ada laporan berlokasi pada rentang ini" />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="table-base">
+                  <thead>
+                    <tr>
+                      <th>Lokasi</th>
+                      <th>Kategori</th>
+                      <th className="text-right">Jumlah laporan</th>
+                      <th className="text-right">Masih aktif</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {data.Locations.map((l) => (
+                      <tr key={l.Location}>
+                        <td className="font-medium">{l.Location}</td>
+                        <td className="text-xs text-slate-500">{l.Categories.join(", ")}</td>
+                        <td className="text-right tabular-nums">{l.TicketCount}</td>
+                        <td className={`text-right tabular-nums ${l.ActiveCount >= 2 ? "font-semibold text-red-600" : ""}`}>{l.ActiveCount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>

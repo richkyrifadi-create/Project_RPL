@@ -45,6 +45,7 @@ export function MapCategory(category: PrismaCategory & { Unit: PrismaUnit }): Ca
     Description: category.Description,
     SlaHours: category.SlaHours,
     IsConfidential: category.IsConfidential,
+    RequiresLocation: category.RequiresLocation,
     IsActive: category.IsActive,
     CreatedAt: category.CreatedAt.toISOString()
   };
@@ -93,6 +94,7 @@ export function MapTicket(ticket: TicketWithRelations, viewer: AuthUser): Ticket
     AssigneeName: ticket.Assignee?.Name ?? null,
     Title: contentHidden ? null : ticket.Title,
     Description: contentHidden ? null : ticket.Description,
+    Location: contentHidden ? null : ticket.Location,
     Priority: ticket.Priority,
     Status: ticket.Status,
     IsAnonymous: ticket.IsAnonymous,

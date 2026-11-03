@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Prisma } from "@prisma/client";
 import {
   DashboardQuerySchema,
+  GetLocationHotspots,
   GetSlaStatus,
   ToJakartaDateInput,
   type ActionCountResponse,
@@ -89,7 +90,10 @@ DashboardRoutes.get(
           AverageRating: summary.AverageRating
         };
       }),
-      Categories: [...categoryMap.values()].sort((a, b) => b.TicketCount - a.TicketCount)
+      Categories: [...categoryMap.values()].sort((a, b) => b.TicketCount - a.TicketCount),
+      Locations: GetLocationHotspots(
+        tickets.map((t) => ({ Location: t.Location, Status: t.Status, CategoryName: t.Category.Name, IsConfidential: t.Category.IsConfidential }))
+      )
     };
     res.json(response);
   })

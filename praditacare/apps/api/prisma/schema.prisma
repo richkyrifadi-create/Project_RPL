@@ -42,38 +42,39 @@ model Unit {
 }
 
 model User {
-  Id               Int                   @id @default(autoincrement())
-  Name             String                @db.VarChar(120)
-  Email            String                @unique @db.VarChar(191)
-  PasswordHash     String                @db.VarChar(100)
-  Role             UserRole
-  StudentNumber    String?               @unique @db.VarChar(30)
-  StudyProgram     String?               @db.VarChar(120)
-  UnitId           Int?
-  IsActive         Boolean               @default(true)
-  LastLoginAt      DateTime?
-  CreatedAt        DateTime              @default(now())
-  Unit             Unit?                 @relation(fields: [UnitId], references: [Id])
-  ReportedTickets  Ticket[]              @relation("TicketReporter")
-  AssignedTickets  Ticket[]              @relation("TicketAssignee")
-  Comments         TicketComment[]
-  Attachments      TicketAttachment[]
-  StatusChanges    TicketStatusHistory[]
+  Id              Int                   @id @default(autoincrement())
+  Name            String                @db.VarChar(120)
+  Email           String                @unique @db.VarChar(191)
+  PasswordHash    String                @db.VarChar(100)
+  Role            UserRole
+  StudentNumber   String?               @unique @db.VarChar(30)
+  StudyProgram    String?               @db.VarChar(120)
+  UnitId          Int?
+  IsActive        Boolean               @default(true)
+  LastLoginAt     DateTime?
+  CreatedAt       DateTime              @default(now())
+  Unit            Unit?                 @relation(fields: [UnitId], references: [Id])
+  ReportedTickets Ticket[]              @relation("TicketReporter")
+  AssignedTickets Ticket[]              @relation("TicketAssignee")
+  Comments        TicketComment[]
+  Attachments     TicketAttachment[]
+  StatusChanges   TicketStatusHistory[]
 
   @@index([Role])
 }
 
 model Category {
-  Id             Int      @id @default(autoincrement())
-  UnitId         Int
-  Name           String   @db.VarChar(120)
-  Description    String   @default("") @db.VarChar(500)
-  SlaHours       Int
-  IsConfidential Boolean  @default(false)
-  IsActive       Boolean  @default(true)
-  CreatedAt      DateTime @default(now())
-  Unit           Unit     @relation(fields: [UnitId], references: [Id])
-  Tickets        Ticket[]
+  Id               Int      @id @default(autoincrement())
+  UnitId           Int
+  Name             String   @db.VarChar(120)
+  Description      String   @default("") @db.VarChar(500)
+  SlaHours         Int
+  IsConfidential   Boolean  @default(false)
+  RequiresLocation Boolean  @default(false)
+  IsActive         Boolean  @default(true)
+  CreatedAt        DateTime @default(now())
+  Unit             Unit     @relation(fields: [UnitId], references: [Id])
+  Tickets          Ticket[]
 }
 
 model Ticket {
@@ -85,6 +86,7 @@ model Ticket {
   AssigneeId      Int?
   Title           String                @db.VarChar(200)
   Description     String                @db.Text
+  Location        String?               @db.VarChar(150)
   Priority        TicketPriority        @default(MEDIUM)
   Status          TicketStatus          @default(OPEN)
   IsAnonymous     Boolean               @default(false)

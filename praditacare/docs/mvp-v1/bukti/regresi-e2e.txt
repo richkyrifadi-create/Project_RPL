@@ -1,0 +1,45 @@
+PASS login semua peran 
+PASS login salah -> 401 
+PASS tanpa token -> 401 
+PASS mahasiswa akses /users -> 403 
+PASS buat tiket + lampiran -> 201 
+PASS nomor tiket format PC-YYYY-NNNNNN 
+PASS unit otomatis dari kategori (IT) 
+PASS DueAt = CreatedAt + SLA 
+PASS lampiran tersimpan 
+PASS lampiran .txt ditolak -> 400 
+PASS validasi gagal -> 422 
+PASS mahasiswa lain tidak bisa lihat -> 404 
+PASS staf unit lain tidak bisa lihat -> 404 
+PASS staf IT bisa lihat 
+PASS unduh lampiran oleh staf -> 200 
+PASS unduh lampiran oleh mahasiswa lain -> 404 
+PASS assign ke staf unit sama 
+PASS assign ke staf unit lain -> 422 
+PASS transisi ilegal OPEN->RESOLVED -> 409 
+PASS mahasiswa ubah status -> 403 
+PASS OPEN -> IN_PROGRESS 
+PASS IN_PROGRESS -> WAITING_REPORTER 
+PASS komentar internal tidak terkirim ke pelapor 
+PASS balasan pelapor -> otomatis IN_PROGRESS 
+PASS mahasiswa tidak bisa buat komentar internal 
+PASS RESOLVED tanpa catatan -> 422 
+PASS IN_PROGRESS -> RESOLVED + ResolvedAt 
+PASS pelapor buka kembali -> IN_PROGRESS 
+PASS feedback rating 6 -> 422 
+PASS feedback -> CLOSED 
+PASS feedback kedua -> 409 
+PASS komentar di tiket CLOSED -> 409 
+PASS riwayat status lengkap (8 baris) 
+PASS admin: tiket rahasia tanpa judul/deskripsi 
+PASS admin: komentar tiket rahasia -> 403 
+PASS staf konseling: anonim -> nama pelapor disembunyikan 
+PASS pelapor sendiri melihat namanya 
+PASS dashboard staf hanya unitnya 
+PASS dashboard admin semua unit 
+PASS mahasiswa akses dashboard -> 403 
+PASS action-count mahasiswa 
+PASS filter+keyword+pagination 
+
+42 lulus, 0 gagal
+{"TotalTickets":17,"OpenTickets":8,"InProgressTickets":4,"ResolvedTickets":4,"OverdueTickets":2,"AverageFirstResponseHours":5.6,"AverageResolutionHours":50,"SlaComplianceRate":57.1,"AverageRating":4.7}

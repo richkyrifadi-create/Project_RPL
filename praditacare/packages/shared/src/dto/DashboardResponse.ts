@@ -25,12 +25,20 @@ export interface DashboardCategoryRow {
   TicketCount: number;
 }
 
+export interface DashboardLocationRow {
+  Location: string;
+  TicketCount: number;
+  ActiveCount: number;
+  Categories: string[];
+}
+
 export interface DashboardResponse {
   From: string;
   To: string;
   Summary: DashboardSummary;
   Units: DashboardUnitRow[];
   Categories: DashboardCategoryRow[];
+  Locations: DashboardLocationRow[];
 }
 
 export interface ActionCountResponse {

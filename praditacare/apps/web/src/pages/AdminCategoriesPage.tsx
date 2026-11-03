@@ -10,9 +10,10 @@ interface FormState {
   Description: string;
   SlaHours: string;
   IsConfidential: boolean;
+  RequiresLocation: boolean;
 }
 
-const Empty: FormState = { UnitId: "", Name: "", Description: "", SlaHours: "24", IsConfidential: false };
+const Empty: FormState = { UnitId: "", Name: "", Description: "", SlaHours: "24", IsConfidential: false, RequiresLocation: false };
 
 export function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[] | null>(null);
@@ -39,7 +40,8 @@ export function AdminCategoriesPage() {
             Name: category.Name,
             Description: category.Description,
             SlaHours: String(category.SlaHours),
-            IsConfidential: category.IsConfidential
+            IsConfidential: category.IsConfidential,
+            RequiresLocation: category.RequiresLocation
           }
     );
     setErrors(undefined);
@@ -67,8 +69,8 @@ export function AdminCategoriesPage() {
     if (!toggle) return;
     setBusy(true);
     try {
-      const { UnitId, Name, Description, SlaHours, IsConfidential, IsActive } = toggle;
-      await Api.Send("PUT", `/categories/${toggle.Id}`, { UnitId, Name, Description, SlaHours, IsConfidential, IsActive: !IsActive });
+      const { UnitId, Name, Description, SlaHours, IsConfidential, RequiresLocation, IsActive } = toggle;
+      await Api.Send("PUT", `/categories/${toggle.Id}`, { UnitId, Name, Description, SlaHours, IsConfidential, RequiresLocation, IsActive: !IsActive });
       setToggle(null);
       await Load();
     } finally {
@@ -96,6 +98,7 @@ export function AdminCategoriesPage() {
                 <th>Unit</th>
                 <th className="text-right">SLA</th>
                 <th>Rahasia</th>
+                <th>Lokasi</th>
                 <th>Status</th>
                 <th></th>
               </tr>
@@ -110,6 +113,7 @@ export function AdminCategoriesPage() {
                   <td className="whitespace-nowrap">{c.UnitName}</td>
                   <td className="text-right tabular-nums">{c.SlaHours} jam</td>
                   <td>{c.IsConfidential ? "Ya" : "Tidak"}</td>
+                  <td>{c.RequiresLocation ? "Wajib" : "Tidak"}</td>
                   <td>
                     <ActiveBadge Active={c.IsActive} />
                   </td>
@@ -173,6 +177,10 @@ export function AdminCategoriesPage() {
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.IsConfidential} onChange={(e) => setForm({ ...form, IsConfidential: e.target.checked })} />
             Kategori rahasia (isi tiket tidak terlihat oleh admin)
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={form.RequiresLocation} onChange={(e) => setForm({ ...form, RequiresLocation: e.target.checked })} />
+            Wajib isi lokasi (untuk laporan fasilitas: gedung, lantai, ruang)
           </label>
         </div>
       </Modal>

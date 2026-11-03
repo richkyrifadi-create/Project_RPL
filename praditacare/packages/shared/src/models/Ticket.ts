@@ -17,6 +17,7 @@ export interface Ticket {
   AssigneeName: string | null;
   Title: string | null;
   Description: string | null;
+  Location: string | null;
   Priority: TicketPriority;
   Status: TicketStatus;
   IsAnonymous: boolean;

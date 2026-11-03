@@ -14,5 +14,6 @@ export const CategorySchema = z.object({
   Description: z.string().trim().max(500, "Deskripsi maksimal 500 karakter").default(""),
   SlaHours: z.coerce.number({ invalid_type_error: "SLA wajib diisi" }).int().min(1, "SLA minimal 1 jam").max(720, "SLA maksimal 720 jam"),
   IsConfidential: BooleanLike.default(false),
+  RequiresLocation: BooleanLike.default(false),
   IsActive: BooleanLike.optional()
 });

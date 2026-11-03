@@ -93,7 +93,7 @@ export function StaffQueuePage() {
             SetFilter("Keyword", keywordDraft);
           }}
         >
-          <input className="input" placeholder="Cari nomor, judul, atau deskripsi..." value={keywordDraft} onChange={(e) => setKeywordDraft(e.target.value)} />
+          <input className="input" placeholder="Cari nomor, judul, deskripsi, atau lokasi..." value={keywordDraft} onChange={(e) => setKeywordDraft(e.target.value)} />
           <button className="btn-secondary">Cari</button>
         </form>
         <select className="input" value={filters.Status} onChange={(e) => SetFilter("Status", e.target.value)}>
@@ -170,6 +170,7 @@ export function StaffQueuePage() {
                       <td className="min-w-48 font-medium text-slate-900">
                         {t.Title ?? <span className="italic text-slate-400">Rahasia</span>}
                         {t.IsConfidential && t.Title && <span className="ml-2 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-white">Rahasia</span>}
+                        {t.Location && <p className="text-xs font-normal text-slate-500">{t.Location}</p>}
                       </td>
                       <td className="whitespace-nowrap">
                         {t.CategoryName}

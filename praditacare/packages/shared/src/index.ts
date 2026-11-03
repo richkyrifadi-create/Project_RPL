@@ -26,3 +26,5 @@ export * from "./constants/UploadLimits.js";
 export * from "./constants/Labels.js";
 export * from "./utils/GetSlaStatus.js";
 export * from "./utils/FormatDate.js";
+export * from "./utils/TicketLocation.js";
+export * from "./utils/LocationHotspots.js";

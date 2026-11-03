@@ -38,6 +38,19 @@ npm run dev:web
 
 Buka http://localhost:5173. Vite mem-proxy `/api` ke `http://localhost:4000`.
 
+## MVP v1 (Pertemuan 5)
+
+Dua fitur inti yang ditambahkan secara iteratif (lokasi laporan dan dashboard lokasi paling sering bermasalah), lengkap dengan brief, acceptance criteria, bukti verifikasi, dan skrip demo: [docs/mvp-v1/README.md](docs/mvp-v1/README.md).
+
+## Unit test
+
+```bash
+npm test           # menjalankan semua unit test (Vitest), tidak butuh database
+npm run test:watch # mode watch saat mengembangkan
+```
+
+File test berada di samping kode yang diuji (`*.test.ts`) di `packages/shared/src` dan `apps/api/src`.
+
 Build produksi: `npm run build`, lalu `npm run start -w @praditacare/api` dan sajikan `apps/web/dist` sebagai file statis.
 
 ## Akun seed
@@ -54,7 +67,7 @@ Password semua akun: `Pradita123!`
 | Staf Konseling | staf.konseling@pradita.ac.id |
 | Mahasiswa | budi@student.pradita.ac.id, siti@student.pradita.ac.id, andi@student.pradita.ac.id |
 
-Seed berisi 5 unit, 8 kategori (Konseling Pribadi bersifat rahasia), dan 10 tiket dengan status beragam. Seed dilewati bila database sudah berisi data; untuk mengulang dari nol jalankan `npm run db:reset -w @praditacare/api` (menghapus semua data, hanya untuk database development).
+Seed berisi 5 unit, 8 kategori (Konseling Pribadi bersifat rahasia), dan 13 tiket dengan status beragam (sebagian laporan fasilitas berisi lokasi). Seed dilewati bila database sudah berisi data; untuk mengulang dari nol jalankan `npm run db:reset -w @praditacare/api` (menghapus semua data, hanya untuk database development).
 
 ## Upload lampiran
 

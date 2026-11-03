@@ -1,0 +1,32 @@
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > ON_TRACK bila sisa waktu masih lebih dari 25% SLA 3ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > AT_RISK bila sisa waktu kurang dari 25% SLA 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > OVERDUE bila tenggat lewat dan tiket belum selesai 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > MET bila diselesaikan sebelum tenggat 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetSlaStatus > BREACHED bila diselesaikan setelah tenggat 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetRemainingText > menampilkan sisa waktu dalam jam dan menit 0ms
+ ✓ packages/shared/src/utils/GetSlaStatus.test.ts > GetRemainingText > menampilkan keterlambatan dalam hari dan jam 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > menyamakan huruf besar/kecil, tanda baca, dan spasi 2ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > menyeragamkan singkatan umum (Gd., Lt., R.) 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > LocationKey > lokasi kosong atau hanya tanda baca menghasilkan null 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC1: penulisan berbeda untuk lokasi yang sama dihitung jadi satu 2ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC2: diurutkan dari laporan terbanyak dan dibatasi 5 lokasi 20ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC3: menghitung tiket yang masih aktif secara terpisah 1ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > AC4: tiket tanpa lokasi dan tiket kategori rahasia tidak dihitung 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > menampilkan penulisan yang paling sering dipakai dan daftar kategorinya 0ms
+ ✓ packages/shared/src/utils/LocationHotspots.test.ts > GetLocationHotspots > mengembalikan array kosong bila belum ada lokasi 1ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > NormalizeLocation > membuang spasi berlebih di awal, akhir, dan tengah 1ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > NormalizeLocation > mengubah string kosong atau spasi saja menjadi null 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC1: kategori fasilitas tanpa lokasi ditolak 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC2: kategori fasilitas dengan lokasi valid diterima 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > AC3: kategori non-fasilitas boleh tanpa lokasi 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > ValidateTicketLocation > menolak lokasi yang terlalu pendek atau terlalu panjang 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > merapikan lokasi dari form 2ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > lokasi kosong dari form menjadi null (bukan string kosong) 0ms
+ ✓ packages/shared/src/utils/TicketLocation.test.ts > CreateTicketSchema.Location > lokasi terlalu panjang menghasilkan error pada field Location 1ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > mengizinkan alur normal OPEN → IN_PROGRESS → RESOLVED 1ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > menolak loncat langsung OPEN → RESOLVED 0ms
+ ✓ packages/shared/src/constants/TicketStatusTransitions.test.ts > CanTransition > tidak ada transisi dari status final 0ms
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Start at  18:59:53
+   Duration  738ms (transform 326ms, setup 0ms, collect 473ms, tests 47ms, environment 1ms, prepare 413ms)

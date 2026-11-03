@@ -2,7 +2,11 @@
   "name": "praditacare",
   "private": true,
   "version": "1.0.0",
-  "workspaces": ["packages/shared", "apps/api", "apps/web"],
+  "workspaces": [
+    "packages/shared",
+    "apps/api",
+    "apps/web"
+  ],
   "scripts": {
     "build:shared": "npm run build -w @praditacare/shared",
     "build": "npm run build -w @praditacare/shared && npm run build -w @praditacare/api && npm run build -w @praditacare/web",
@@ -12,10 +16,13 @@
     "db:migrate": "npm run db:migrate -w @praditacare/api",
     "db:deploy": "npm run db:deploy -w @praditacare/api",
     "db:seed": "npm run db:seed -w @praditacare/api",
-    "typecheck": "npm run build:shared && npm run typecheck -w @praditacare/api && npm run typecheck -w @praditacare/web"
+    "typecheck": "npm run build:shared && npm run typecheck -w @praditacare/api && npm run typecheck -w @praditacare/web",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",
-    "typescript": "~5.6.3"
+    "typescript": "~5.6.3",
+    "vitest": "^3.2.4"
   }
 }
