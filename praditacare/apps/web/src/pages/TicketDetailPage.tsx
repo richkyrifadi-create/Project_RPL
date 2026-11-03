@@ -3,7 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import {
   FormatDateTime,
   GetRemainingText,
-  ReopenWindowDays,
+  CanReopen,
+  LowRatingThreshold,
+  ValidateFeedbackComment,
   StatusesRequiringNote,
   TicketPriorityLabels,
   TicketPriorityValues,
@@ -115,8 +117,7 @@ export function TicketDetailPage() {
   const isFinal = ticket.Status === "CLOSED" || ticket.Status === "REJECTED";
   const isReporter = ticket.IsMine;
   const isActive = !["RESOLVED", "CLOSED", "REJECTED"].includes(ticket.Status);
-  const canReopen =
-    isReporter && ticket.Status === "RESOLVED" && !!ticket.ResolvedAt && Date.now() - Date.parse(ticket.ResolvedAt) <= ReopenWindowDays * 86400000;
+  const canReopen = isReporter && CanReopen(ticket).Allowed;
 
   function OpenAction(action: PendingAction) {
     setActionNote("");
@@ -439,6 +440,8 @@ function FeedbackForm({ Ticket, OnDone }: { Ticket: Ticket; OnDone: () => Promis
   async function Submit(e: FormEvent) {
     e.preventDefault();
     if (!rating) return setError("Pilih rating 1 sampai 5");
+    const commentError = ValidateFeedbackComment(rating, comment);
+    if (commentError) return setError(commentError);
     setBusy(true);
     try {
       await Api.Send("POST", `/tickets/${Ticket.Id}/feedback`, { Rating: rating, Comment: comment || null });
@@ -460,7 +463,7 @@ function FeedbackForm({ Ticket, OnDone }: { Ticket: Ticket; OnDone: () => Promis
           </button>
         ))}
       </div>
-      <textarea className="input" placeholder="Komentar (opsional)" value={comment} onChange={(e) => setComment(e.target.value)} />
+      <textarea className="input" placeholder={rating && rating <= LowRatingThreshold ? "Apa yang kurang? (wajib untuk rating rendah)" : "Komentar (opsional)"} value={comment} onChange={(e) => setComment(e.target.value)} />
       <button className="btn-primary w-full" disabled={busy}>
         {busy ? "Mengirim..." : "Kirim Penilaian & Tutup Tiket"}
       </button>

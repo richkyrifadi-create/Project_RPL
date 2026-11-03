@@ -1,10 +1,10 @@
 import cron from "node-cron";
-import { AutoCloseDays } from "@praditacare/shared";
+import { AutoCloseDays, AutoCloseThreshold } from "@praditacare/shared";
 import { prisma } from "../Prisma.js";
 import { ApplyStatusChange } from "../services/TicketService.js";
 
 export async function AutoCloseResolvedTickets(): Promise<number> {
-  const threshold = new Date(Date.now() - AutoCloseDays * 86400000);
+  const threshold = AutoCloseThreshold(new Date());
   const tickets = await prisma.ticket.findMany({ where: { Status: "RESOLVED", ResolvedAt: { lte: threshold }, Feedback: null } });
   for (const ticket of tickets) {
     await prisma.$transaction((tx) =>

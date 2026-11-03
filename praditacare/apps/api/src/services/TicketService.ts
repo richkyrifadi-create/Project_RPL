@@ -1,5 +1,5 @@
 import type { Prisma, TicketStatus } from "@prisma/client";
-import { FinalStatuses } from "@praditacare/shared";
+import { FinalStatuses, FormatTicketNumber, StatusTimestampsFor } from "@praditacare/shared";
 import { Conflict, Forbidden, NotFound } from "../HttpError.js";
 import { prisma } from "../Prisma.js";
 import type { AuthUser } from "../types/express.js";
@@ -32,7 +32,7 @@ export async function NextTicketNumber(tx: Prisma.TransactionClient, now: Date):
   const year = now.getUTCFullYear();
   await tx.$executeRaw`INSERT INTO TicketSequence (Year, LastNumber) VALUES (${year}, 1) ON DUPLICATE KEY UPDATE LastNumber = LastNumber + 1`;
   const sequence = await tx.ticketSequence.findUniqueOrThrow({ where: { Year: year } });
-  return `PC-${year}-${String(sequence.LastNumber).padStart(6, "0")}`;
+  return FormatTicketNumber(year, sequence.LastNumber);
 }
 
 interface StatusChange {
@@ -46,10 +46,11 @@ interface StatusChange {
 
 export async function ApplyStatusChange(tx: Prisma.TransactionClient, change: StatusChange) {
   const now = new Date();
-  const data: Prisma.TicketUncheckedUpdateInput = { ...change.Extra, Status: change.ToStatus };
-  if (change.ToStatus === "RESOLVED") data.ResolvedAt = now;
-  if (change.ToStatus === "CLOSED" || change.ToStatus === "REJECTED") data.ClosedAt = now;
-  if (change.CountsAsFirstResponse && !change.Ticket.FirstResponseAt) data.FirstResponseAt = now;
+  const data: Prisma.TicketUncheckedUpdateInput = {
+    ...change.Extra,
+    Status: change.ToStatus,
+    ...StatusTimestampsFor(change.ToStatus, now, change.CountsAsFirstResponse ?? false, !!change.Ticket.FirstResponseAt)
+  };
   await tx.ticket.update({ where: { Id: change.Ticket.Id }, data });
   await tx.ticketStatusHistory.create({
     data: {

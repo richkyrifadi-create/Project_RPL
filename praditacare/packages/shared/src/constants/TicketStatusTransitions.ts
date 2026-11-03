@@ -9,7 +9,8 @@ export const TicketStatusTransitions: Record<TicketStatus, TicketStatus[]> = {
   REJECTED: []
 };
 
-export const StatusesRequiringNote: TicketStatus[] = ["REJECTED", "RESOLVED"];
+// Menunggu Pelapor wajib catatan: isinya pertanyaan/permintaan yang harus dijawab pelapor.
+export const StatusesRequiringNote: TicketStatus[] = ["REJECTED", "RESOLVED", "WAITING_REPORTER"];
 export const FinalStatuses: TicketStatus[] = ["CLOSED", "REJECTED"];
 export const ActiveStatuses: TicketStatus[] = ["OPEN", "IN_PROGRESS", "WAITING_REPORTER"];
 export const ReopenWindowDays = 7;

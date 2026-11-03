@@ -1,0 +1,36 @@
+--- US1 Mahasiswa membuat laporan
+PASS US1-AC1 unit otomatis Sarana Prasarana
+PASS US1-AC2 DueAt = CreatedAt + 24 jam
+PASS US1-AC3 nomor tiket PC-YYYY-NNNNNN
+PASS US1-AC4 kategori nonaktif ditolak 422
+PASS US1-AC5 tanpa lokasi ditolak 422 di field Location
+--- US2 Staf memproses laporan
+PASS US2-AC1 Terbuka → Selesai langsung ditolak 409
+PASS US2-AC1 Terbuka → Diproses diterima
+PASS US2-AC3 staf Sarpras otomatis jadi petugas
+PASS US2-AC4 respons pertama tercatat
+PASS US2-AC2 Menunggu Pelapor tanpa catatan ditolak 422
+PASS US2-AC5 petugas tidak valid ditolak 422
+PASS US2-AC5 daftar petugas hanya staf Sarpras
+--- US3 Pelapor membalas & membuka kembali
+PASS US3-AC4 komentar mahasiswa tidak bisa internal
+PASS US3-AC1 balasan pelapor mengembalikan ke Diproses
+PASS US3-AC3 mahasiswa lain tidak bisa berkomentar (404)
+PASS US3-AC2 dibuka kembali dalam 7 hari
+--- US4 Penilaian & tutup otomatis
+PASS US4-AC1 belum Selesai tidak bisa dinilai 409
+PASS US4-AC3 rating 1 tanpa alasan ditolak 422
+PASS US4-AC2 rating 6 ditolak 422
+PASS US4-AC1 penilaian diterima dan tiket Ditutup
+PASS US4-AC1 penilaian kedua ditolak 409
+PASS US3-AC3 tiket Ditutup tidak bisa dikomentari 409
+--- US5 Privasi
+PASS US5-AC1 pelapor melihat namanya sendiri
+PASS US5-AC1 staf IT melihat 'Anonim'
+PASS US5-AC2 admin tidak melihat isi tiket rahasia
+PASS US5-AC3 admin tidak melihat nama pelapor tiket rahasia
+PASS US5-AC2 staf Konseling melihat isi
+PASS US5-AC4 mahasiswa tidak melihat komentar internal
+PASS US5-AC4 staf melihat komentar internal
+
+29 PASS, 0 FAIL
