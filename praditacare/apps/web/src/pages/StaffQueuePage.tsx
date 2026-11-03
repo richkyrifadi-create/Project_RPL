@@ -93,7 +93,7 @@ export function StaffQueuePage() {
             SetFilter("Keyword", keywordDraft);
           }}
         >
-          <input className="input" placeholder="Cari nomor, judul, atau deskripsi..." value={keywordDraft} onChange={(e) => setKeywordDraft(e.target.value)} />
+          <input className="input" placeholder="Cari nomor, judul, deskripsi, atau lokasi..." value={keywordDraft} onChange={(e) => setKeywordDraft(e.target.value)} />
           <button className="btn-secondary">Cari</button>
         </form>
         <select className="input" value={filters.Status} onChange={(e) => SetFilter("Status", e.target.value)}>

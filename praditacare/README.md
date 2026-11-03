@@ -38,6 +38,10 @@ npm run dev:web
 
 Buka http://localhost:5173. Vite mem-proxy `/api` ke `http://localhost:4000`.
 
+## MVP v1 (Pertemuan 5)
+
+Dua fitur inti yang ditambahkan secara iteratif (lokasi laporan dan dashboard lokasi paling sering bermasalah), lengkap dengan brief, acceptance criteria, bukti verifikasi, dan skrip demo: [docs/mvp-v1/README.md](docs/mvp-v1/README.md).
+
 ## Unit test
 
 ```bash
