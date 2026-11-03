@@ -2,6 +2,7 @@ import { z } from "zod";
 import { StatusesRequiringNote } from "../constants/TicketStatusTransitions.js";
 import { TicketPriorityValues } from "../enums/TicketPriority.js";
 import { TicketStatusValues } from "../enums/TicketStatus.js";
+import { ValidateFeedbackComment } from "../rules/FeedbackRules.js";
 import { LocationMaxLength, LocationMinLength, NormalizeLocation } from "../utils/TicketLocation.js";
 import { BooleanLike, RequiredText } from "./Common.js";
 
@@ -70,10 +71,15 @@ export const ReopenTicketSchema = z.object({
   Note: RequiredText("Alasan", 5, 1000)
 });
 
-export const FeedbackSchema = z.object({
-  Rating: z.coerce.number({ invalid_type_error: "Rating wajib dipilih" }).int().min(1, "Rating 1 sampai 5").max(5, "Rating 1 sampai 5"),
-  Comment: z.string().trim().max(1000).optional().nullable()
-});
+export const FeedbackSchema = z
+  .object({
+    Rating: z.coerce.number({ invalid_type_error: "Rating wajib dipilih" }).int().min(1, "Rating 1 sampai 5").max(5, "Rating 1 sampai 5"),
+    Comment: z.string().trim().max(1000).optional().nullable()
+  })
+  .superRefine((data, ctx) => {
+    const error = ValidateFeedbackComment(data.Rating, data.Comment);
+    if (error) ctx.addIssue({ code: z.ZodIssueCode.custom, message: error, path: ["Comment"] });
+  });
 
 export const DashboardQuerySchema = z.object({
   From: z.string().date("Tanggal awal tidak valid").optional(),

@@ -2,6 +2,9 @@ import type { TicketAttachment as PrismaAttachment, Unit as PrismaUnit, Category
 import type { User as PrismaUser, TicketFeedback as PrismaFeedback } from "@prisma/client";
 import {
   GetSlaStatus,
+  IsContentHidden as IsContentHiddenRule,
+  IsReporterHidden as IsReporterHiddenRule,
+  ReporterDisplayName,
   type Category,
   type Ticket,
   type TicketAttachment,
@@ -71,12 +74,10 @@ export function MapFeedback(feedback: PrismaFeedback | null): TicketFeedback | n
 }
 
 export function IsContentHidden(ticket: TicketWithRelations, viewer: AuthUser): boolean {
-  return ticket.Category.IsConfidential && viewer.Role === "ADMIN";
+  return IsContentHiddenRule(ticket.Category.IsConfidential, viewer);
 }
 
-export function IsReporterHidden(ticket: { IsAnonymous: boolean; ReporterId: number }, viewer: AuthUser): boolean {
-  return ticket.IsAnonymous && viewer.Id !== ticket.ReporterId;
-}
+export const IsReporterHidden = IsReporterHiddenRule;
 
 export function MapTicket(ticket: TicketWithRelations, viewer: AuthUser): Ticket {
   const contentHidden = IsContentHidden(ticket, viewer);
@@ -85,7 +86,7 @@ export function MapTicket(ticket: TicketWithRelations, viewer: AuthUser): Ticket
     Id: ticket.Id,
     TicketNumber: ticket.TicketNumber,
     ReporterId: reporterHidden ? null : ticket.ReporterId,
-    ReporterName: reporterHidden ? "Anonim" : ticket.Reporter.Name,
+    ReporterName: ReporterDisplayName({ ...ticket, ReporterName: ticket.Reporter.Name, IsConfidential: ticket.Category.IsConfidential }, viewer),
     CategoryId: ticket.CategoryId,
     CategoryName: ticket.Category.Name,
     UnitId: ticket.UnitId,

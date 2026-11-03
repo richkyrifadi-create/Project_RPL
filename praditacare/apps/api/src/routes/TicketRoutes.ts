@@ -3,19 +3,27 @@ import type { Prisma } from "@prisma/client";
 import {
   ActiveStatuses,
   AssignTicketSchema,
-  CanTransition,
+  CalculateDueAt,
+  CanComment,
+  CanGiveFeedback,
+  CanReopen,
+  CanSeeInternalComments,
   ChangeCategorySchema,
   ChangePrioritySchema,
   ChangeStatusSchema,
+  CheckAssignee,
+  CheckNewTicket,
+  CountsAsFirstResponse,
   CreateCommentSchema,
   CreateTicketSchema,
-  ValidateTicketLocation,
   FeedbackSchema,
+  FinalStatuses,
   IdParamSchema,
+  PlanStatusChange,
   ReopenTicketSchema,
-  ReopenWindowDays,
+  ResolveCommentInternal,
+  ShouldResumeAfterReply,
   TicketListQuerySchema,
-  TicketStatusLabels,
   type PagedResponse,
   type Ticket
 } from "@praditacare/shared";
@@ -112,10 +120,12 @@ TicketRoutes.post(
   ValidateBody(CreateTicketSchema),
   Handle(async (req, res) => {
     const user = GetAuthUser(req);
-    const category = await prisma.category.findFirst({ where: { Id: req.body.CategoryId, IsActive: true, Unit: { IsActive: true } } });
-    if (!category) throw new HttpError(422, "Kategori tidak tersedia", { CategoryId: ["Kategori tidak tersedia"] });
-    const locationError = ValidateTicketLocation(category.RequiresLocation, req.body.Location);
-    if (locationError) throw new HttpError(422, locationError, { Location: [locationError] });
+    const category = await prisma.category.findUnique({ where: { Id: req.body.CategoryId }, include: { Unit: true } });
+    const check = CheckNewTicket(
+      category && { IsActive: category.IsActive, UnitIsActive: category.Unit.IsActive, RequiresLocation: category.RequiresLocation },
+      req.body.Location
+    );
+    if (!check.Result.Allowed) throw new HttpError(422, check.Result.Reason, { [check.Field!]: [check.Result.Reason] });
     const files = GetUploadedFiles(req.files);
     const ticketId = await prisma.$transaction(async (tx) => {
       const now = new Date();
@@ -123,14 +133,14 @@ TicketRoutes.post(
         data: {
           TicketNumber: await NextTicketNumber(tx, now),
           ReporterId: user.Id,
-          CategoryId: category.Id,
-          UnitId: category.UnitId,
+          CategoryId: category!.Id,
+          UnitId: category!.UnitId,
           Title: req.body.Title,
           Description: req.body.Description,
           Location: req.body.Location,
           Priority: req.body.Priority,
           IsAnonymous: req.body.IsAnonymous,
-          DueAt: new Date(now.getTime() + category.SlaHours * 3600 * 1000),
+          DueAt: CalculateDueAt(now, category!.SlaHours),
           CreatedAt: now
         }
       });
@@ -173,12 +183,9 @@ TicketRoutes.put(
     const ticket = await LoadTicket(Id, user);
     EnsureNotFinal(ticket);
     const assigneeId: number | null = req.body.AssigneeId;
-    if (assigneeId) {
-      const assignee = await prisma.user.findUnique({ where: { Id: assigneeId } });
-      if (!assignee || assignee.Role !== "STAFF" || !assignee.IsActive || assignee.UnitId !== ticket.UnitId) {
-        throw new HttpError(422, "Petugas harus staf aktif di unit yang sama", { AssigneeId: ["Petugas tidak valid"] });
-      }
-    }
+    const assignee = assigneeId ? await prisma.user.findUnique({ where: { Id: assigneeId } }) : null;
+    const assigneeCheck = CheckAssignee(assignee, ticket.UnitId, assigneeId === null);
+    if (!assigneeCheck.Allowed) throw new HttpError(422, assigneeCheck.Reason, { AssigneeId: ["Petugas tidak valid"] });
     await prisma.ticket.update({ where: { Id }, data: { AssigneeId: assigneeId } });
     res.json(MapTicket(await LoadTicket(Id, user), user));
   })
@@ -205,10 +212,15 @@ TicketRoutes.put(
     const user = GetAuthUser(req);
     const { Id } = IdParamSchema.parse(req.params);
     const ticket = await LoadTicket(Id, user);
-    if (!CanTransition(ticket.Status, req.body.Status)) {
-      throw Conflict(`Status tidak dapat diubah dari ${TicketStatusLabels[ticket.Status]} ke ${TicketStatusLabels[req.body.Status as Ticket["Status"]]}`);
-    }
-    const autoAssign = user.Role === "STAFF" && !ticket.AssigneeId && req.body.Status === "IN_PROGRESS" && user.UnitId === ticket.UnitId;
+    const plan = PlanStatusChange({
+      CurrentStatus: ticket.Status,
+      ToStatus: req.body.Status,
+      Note: req.body.Note,
+      TicketUnitId: ticket.UnitId,
+      AssigneeId: ticket.AssigneeId,
+      Actor: user
+    });
+    if (!plan.Allowed) throw Conflict(plan.Reason);
     await prisma.$transaction((tx) =>
       ApplyStatusChange(tx, {
         Ticket: ticket,
@@ -216,7 +228,7 @@ TicketRoutes.put(
         ChangedById: user.Id,
         Note: req.body.Note,
         CountsAsFirstResponse: true,
-        Extra: autoAssign ? { AssigneeId: user.Id } : undefined
+        Extra: plan.AutoAssign ? { AssigneeId: user.Id } : undefined
       })
     );
     res.json(MapTicket(await LoadTicket(Id, user), user));
@@ -259,10 +271,8 @@ TicketRoutes.post(
     const user = GetAuthUser(req);
     const { Id } = IdParamSchema.parse(req.params);
     const ticket = await LoadTicket(Id, user);
-    if (ticket.Status !== "RESOLVED" || !ticket.ResolvedAt) throw Conflict("Hanya tiket berstatus Selesai yang dapat dibuka kembali");
-    if (Date.now() - ticket.ResolvedAt.getTime() > ReopenWindowDays * 86400000) {
-      throw Conflict(`Tiket hanya dapat dibuka kembali dalam ${ReopenWindowDays} hari setelah selesai`);
-    }
+    const reopen = CanReopen(ticket);
+    if (!reopen.Allowed) throw Conflict(reopen.Reason);
     await prisma.$transaction((tx) =>
       ApplyStatusChange(tx, { Ticket: ticket, ToStatus: "IN_PROGRESS", ChangedById: user.Id, Note: req.body.Note, Extra: { ResolvedAt: null } })
     );
@@ -277,7 +287,7 @@ TicketRoutes.get(
     const { Id } = IdParamSchema.parse(req.params);
     const ticket = await LoadTicketContent(Id, user);
     const comments = await prisma.ticketComment.findMany({
-      where: { TicketId: Id, ...(user.Role === "STUDENT" ? { IsInternal: false } : {}) },
+      where: { TicketId: Id, ...(CanSeeInternalComments(user.Role) ? {} : { IsInternal: false }) },
       include: CommentInclude,
       orderBy: { CreatedAt: "asc" }
     });
@@ -293,18 +303,18 @@ TicketRoutes.post(
     const user = GetAuthUser(req);
     const { Id } = IdParamSchema.parse(req.params);
     const ticket = await LoadTicketContent(Id, user);
-    EnsureNotFinal(ticket);
     const isReporter = ticket.ReporterId === user.Id;
-    if (user.Role === "STUDENT" && !isReporter) throw Forbidden();
-    const isInternal = user.Role !== "STUDENT" && req.body.IsInternal === true;
+    const canComment = CanComment({ Role: user.Role, IsReporter: isReporter, Status: ticket.Status });
+    if (!canComment.Allowed) throw FinalStatuses.includes(ticket.Status) ? Conflict(canComment.Reason) : Forbidden(canComment.Reason);
+    const isInternal = ResolveCommentInternal(user.Role, req.body.IsInternal === true);
     const files = GetUploadedFiles(req.files);
     const commentId = await prisma.$transaction(async (tx) => {
       const comment = await tx.ticketComment.create({ data: { TicketId: Id, AuthorId: user.Id, Body: req.body.Body, IsInternal: isInternal } });
       if (files.length) await tx.ticketAttachment.createMany({ data: AttachmentRows(files, Id, user.Id, comment.Id) });
-      if (user.Role !== "STUDENT" && !isInternal && !ticket.FirstResponseAt) {
+      if (CountsAsFirstResponse({ Role: user.Role, IsInternal: isInternal, HasFirstResponse: !!ticket.FirstResponseAt })) {
         await tx.ticket.update({ where: { Id }, data: { FirstResponseAt: new Date() } });
       }
-      if (isReporter && ticket.Status === "WAITING_REPORTER") {
+      if (ShouldResumeAfterReply({ Status: ticket.Status, IsReporter: isReporter })) {
         await ApplyStatusChange(tx, { Ticket: ticket, ToStatus: "IN_PROGRESS", ChangedById: user.Id, Note: "Pelapor memberikan balasan" });
       }
       return comment.Id;
@@ -348,8 +358,8 @@ TicketRoutes.post(
     const user = GetAuthUser(req);
     const { Id } = IdParamSchema.parse(req.params);
     const ticket = await LoadTicket(Id, user);
-    if (ticket.Status !== "RESOLVED") throw Conflict("Feedback hanya dapat diberikan untuk tiket berstatus Selesai");
-    if (ticket.Feedback) throw Conflict("Feedback untuk tiket ini sudah diberikan");
+    const feedback = CanGiveFeedback({ Status: ticket.Status, HasFeedback: !!ticket.Feedback });
+    if (!feedback.Allowed) throw Conflict(feedback.Reason);
     await prisma.$transaction(async (tx) => {
       await tx.ticketFeedback.create({ data: { TicketId: Id, Rating: req.body.Rating, Comment: req.body.Comment || null } });
       await ApplyStatusChange(tx, { Ticket: ticket, ToStatus: "CLOSED", ChangedById: user.Id, Note: `Feedback rating ${req.body.Rating}/5` });
