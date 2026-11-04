@@ -6,7 +6,7 @@ Tanggal uji: 3 November 2026 · Kode: folder [`praditacare/`](praditacare/) · S
 
 | Jenis uji | Perintah | Hasil |
 | --- | --- | --- |
-| Unit test (Vitest, 11 file) | `npm test` | **PASSED** 96/96 |
+| Unit test (Vitest, 15 file) | `npm test` | **PASSED** 119/119 (4 Nov: +23 test security) |
 | Typecheck + build (shared, api, web) | `npm run typecheck`, `npm run build` | **PASSED** 0 error |
 | E2E API (alur lengkap semua peran) | `node docs/e2e-test.mjs` | **PASSED** 42/42 |
 | Verifikasi Fitur 1 Lokasi laporan | `node docs/mvp-v1/verify-fitur-1.mjs` | **PASSED** 13/13 |
@@ -14,6 +14,8 @@ Tanggal uji: 3 November 2026 · Kode: folder [`praditacare/`](praditacare/) · S
 | Verifikasi 5 user story | `node docs/mvp-penyempurnaan/verify-user-stories.mjs` | **PASSED** 29/29 |
 | UI: input salah, kosong, loading, gagal (browser) | `node docs/demo/verify-ui-states.cjs` | **PASSED** 18/18 |
 | Cek tambahan (password, prioritas, pindah kategori, master data, input tidak valid) | `node docs/mvp-final/verify-tambahan.mjs` | **PASSED** 20/20 |
+| Uji security lewat HTTP (4 Nov) | `node docs/security/verify-security.mjs` | **PASSED** 39/39 |
+| Fresh clone → install → test → build → deploy → regresi (4 Nov) | `bash docs/verifikasi-fresh-clone/verify-fresh.sh` | **PASSED**, bukti di [`verifikasi-fresh-clone/`](praditacare/docs/verifikasi-fresh-clone/RINGKASAN.md) |
 | Demo alur lengkap di browser | `node docs/demo/record-demo.cjs` → `demo.mp4` | **PASSED** (berjalan tanpa error) |
 
 Log lengkap tiap pengujian ada di [`praditacare/docs/mvp-final/bukti/`](praditacare/docs/mvp-final/bukti/). Skrip E2E dan verifikasi dijalankan masing-masing pada database yang baru di-seed.
@@ -121,6 +123,10 @@ Kolom **Unit test** menunjuk file `*.test.ts`; kolom **Uji integrasi/E2E** menun
 4. Empty state untuk daftar kategori, user, dan Buat Tiket tanpa kategori aktif.
 5. Tombol bintang rating diberi label aksesibilitas (`Rating 1`–`Rating 5`).
 6. Skrip `docs/demo/verify-ui-states.cjs` (18 cek browser), `docs/mvp-final/verify-tambahan.mjs` (20 cek API), dan `docs/demo/record-demo.cjs` (perekam demo).
+
+## Perubahan pada tahap uji security (4 November 2026)
+
+Rate limit login, header keamanan (helmet), cek isi file upload, log aman tanpa data sensitif, 503 saat database mati, pengaman `JWT_SECRET` di production, mode deploy satu port (`npm start`), dan upgrade dependency rentan (npm audit 13 → 3 temuan). Rincian: [`HASIL-UJI-SECURITY.md`](praditacare/docs/security/HASIL-UJI-SECURITY.md) dan [`LOG-AMAN-DAN-ERROR.md`](praditacare/docs/security/LOG-AMAN-DAN-ERROR.md).
 
 ## Di luar lingkup MVP (sesuai spesifikasi versi pertama)
 

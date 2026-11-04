@@ -99,9 +99,10 @@ run 11-skenario-error.txt "cd $APP && npm start 2>&1 | grep -E 'server.start_fai
 note 11-skenario-error.txt "11c. Database mati saat aplikasi berjalan"
 run 11-skenario-error.txt "mysqladmin -uroot -proot shutdown && sleep 2 && echo 'database dimatikan'"
 run 11-skenario-error.txt "curl -s -w '  <- HTTP %{http_code}\n' -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{\"Email\":\"budi@student.pradita.ac.id\",\"Password\":\"Pradita123!\"}'"
-run 11-skenario-error.txt "sleep 1; grep 'http.unhandled_error' $SERVER_LOG | tail -1"
+run 11-skenario-error.txt "sleep 1; grep -E 'db.unavailable' $SERVER_LOG | tail -1"
 run 11-skenario-error.txt "(mysqld_safe --user=mysql > /dev/null 2>&1 &) ; for i in \$(seq 1 30); do mysqladmin -uroot -proot ping >/dev/null 2>&1 && break; sleep 1; done; echo 'PERBAIKAN: database dinyalakan lagi (docker compose up -d / service mysql start)'"
-run 11-skenario-error.txt "curl -s -o /dev/null -w 'login setelah database hidup lagi -> HTTP %{http_code} (tanpa restart aplikasi)\n' -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{\"Email\":\"budi@student.pradita.ac.id\",\"Password\":\"Pradita123!\"}'"
+run 11-skenario-error.txt "for n in 1 2; do curl -s -o /dev/null -w \"login ke-\$n setelah database hidup lagi -> HTTP %{http_code}\n\" -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{\"Email\":\"budi@student.pradita.ac.id\",\"Password\":\"Pradita123!\"}'; done; echo '(tanpa restart aplikasi; percobaan pertama bisa 503 P1017 karena koneksi lama di pool sudah diputus database)'"
+run 11-skenario-error.txt "grep -E 'db.unavailable' $SERVER_LOG | tail -1"
 stop_server
 note 11-skenario-error.txt "11d. Database baru dibuat tetapi migrasi belum dijalankan"
 run 11-skenario-error.txt "mysql -uroot -proot -e 'DROP DATABASE IF EXISTS praditacare_kosong; CREATE DATABASE praditacare_kosong;' && echo 'database kosong praditacare_kosong dibuat'"

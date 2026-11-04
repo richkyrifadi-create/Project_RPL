@@ -8,6 +8,9 @@ import { HttpError } from "../HttpError.js";
 import { Log, SafeErrorFields } from "../security/SafeLog.js";
 import { GetUploadedFiles, RemoveUploadedFiles } from "./Upload.js";
 
+/** Kode Prisma untuk database tidak terjangkau, timeout, atau koneksi ditutup server. */
+const DatabaseUnavailableCodes = ["P1001", "P1002", "P1008", "P1017"];
+
 export function NotFoundHandler(_req: Request, res: Response<ErrorResponse>) {
   res.status(404).json({ Message: "Endpoint tidak ditemukan" });
 }
@@ -40,6 +43,12 @@ export function ErrorHandler(err: unknown, req: Request, res: Response<ErrorResp
   }
   if (err instanceof SyntaxError && "body" in err) return res.status(400).json({ Message: "Format JSON tidak valid" });
   if ((err as { type?: string }).type === "entity.too.large") return res.status(413).json({ Message: "Data yang dikirim terlalu besar" });
+  const prismaCode = (err as { code?: unknown; errorCode?: unknown }).code ?? (err as { errorCode?: unknown }).errorCode;
+  if (typeof prismaCode === "string" && DatabaseUnavailableCodes.includes(prismaCode)) {
+    // Database mati / koneksi putus: 503 agar jelas bukan bug aplikasi; log tetap dicatat untuk admin.
+    Log.Error("db.unavailable", { reqId: req.RequestId, method: req.method, path: req.originalUrl.split("?")[0], ...SafeErrorFields(err, false) });
+    return res.status(503).json({ Message: "Database sedang tidak dapat dihubungi. Coba lagi beberapa saat lagi.", RequestId: req.RequestId });
+  }
   // Log aman: tanpa body request, token, password; stack hanya di development.
   Log.Error("http.unhandled_error", { reqId: req.RequestId, method: req.method, path: req.originalUrl.split("?")[0], ...SafeErrorFields(err, !Config.IsProduction) });
   res.status(500).json({ Message: "Terjadi kesalahan pada server", RequestId: req.RequestId });
