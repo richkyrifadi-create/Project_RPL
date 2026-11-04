@@ -1,0 +1,72 @@
+# Langkah 11: skenario error nyata, log aman yang muncul, dan perbaikannya
+# Waktu: 2026-11-04 10:04:58 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+## 11a. File .env tidak ada
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && mv .env .env.simpan && npm start 2>&1 | grep -v '^npm error' ; mv .env.simpan .env && echo 'PERBAIKAN: cp .env.example .env lalu isi nilainya'
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+node: ../../.env: not found
+PERBAIKAN: cp .env.example .env lalu isi nilainya
+[exit code: 0]
+
+## 11b. Port 4000 sudah dipakai (server dijalankan dua kali)
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && npm start 2>&1 | grep -E 'server.start_failed' ; echo 'PERBAIKAN: hentikan proses lama (Ctrl+C / kill) atau ubah PORT di .env'
+2026-11-04T10:05:01.656Z ERROR server.start_failed error=Error code=EADDRINUSE message="listen EADDRINUSE: address already in use 0.0.0.0:4000" hint="port 4000 sudah dipakai proses lain; hentikan proses itu atau ubah PORT di .env"
+PERBAIKAN: hentikan proses lama (Ctrl+C / kill) atau ubah PORT di .env
+[exit code: 0]
+
+## 11c. Database mati saat aplikasi berjalan
+$ mysqladmin -uroot -proot shutdown && sleep 2 && echo 'database dimatikan'
+database dimatikan
+[exit code: 0]
+
+$ curl -s -w '  <- HTTP %{http_code}\n' -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{"Email":"budi@student.pradita.ac.id","Password":"Pradita123!"}'
+{"Message":"Database sedang tidak dapat dihubungi. Coba lagi beberapa saat lagi.","RequestId":"d1ecec1b"}  <- HTTP 503
+[exit code: 0]
+
+$ sleep 1; grep -E 'db.unavailable' /home/claude/project_rpl/praditacare/docs/verifikasi-fresh-clone/bukti/12-log-server-production.txt | tail -1
+2026-11-04T10:05:04.704Z ERROR db.unavailable reqId=d1ecec1b method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P1001 message="Please make sure your database server is running at `localhost:3306`."
+[exit code: 0]
+
+$ (mysqld_safe --user=mysql > /dev/null 2>&1 &) ; for i in $(seq 1 30); do mysqladmin -uroot -proot ping >/dev/null 2>&1 && break; sleep 1; done; echo 'PERBAIKAN: database dinyalakan lagi (docker compose up -d / service mysql start)'
+PERBAIKAN: database dinyalakan lagi (docker compose up -d / service mysql start)
+[exit code: 0]
+
+$ for n in 1 2; do curl -s -o /dev/null -w "login ke-$n setelah database hidup lagi -> HTTP %{http_code}\n" -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{"Email":"budi@student.pradita.ac.id","Password":"Pradita123!"}'; done; echo '(tanpa restart aplikasi; percobaan pertama bisa 503 P1017 karena koneksi lama di pool sudah diputus database)'
+login ke-1 setelah database hidup lagi -> HTTP 503
+login ke-2 setelah database hidup lagi -> HTTP 200
+(tanpa restart aplikasi; percobaan pertama bisa 503 P1017 karena koneksi lama di pool sudah diputus database)
+[exit code: 0]
+
+$ grep -E 'db.unavailable' /home/claude/project_rpl/praditacare/docs/verifikasi-fresh-clone/bukti/12-log-server-production.txt | tail -1
+2026-11-04T10:05:06.732Z ERROR db.unavailable reqId=84a4ec43 method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P1017 message="Server has closed the connection."
+[exit code: 0]
+
+## 11d. Database baru dibuat tetapi migrasi belum dijalankan
+$ mysql -uroot -proot -e 'DROP DATABASE IF EXISTS praditacare_kosong; CREATE DATABASE praditacare_kosong;' && echo 'database kosong praditacare_kosong dibuat'
+database kosong praditacare_kosong dibuat
+[exit code: 0]
+
+$ curl -s -w '  <- HTTP %{http_code}\n' -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{"Email":"budi@student.pradita.ac.id","Password":"Pradita123!"}'
+{"Message":"Terjadi kesalahan pada server","RequestId":"93683d9b"}  <- HTTP 500
+[exit code: 0]
+
+$ sleep 1; grep 'http.unhandled_error' /home/claude/project_rpl/praditacare/docs/verifikasi-fresh-clone/bukti/12-log-server-production.txt | tail -1
+2026-11-04T10:05:08.883Z ERROR http.unhandled_error reqId=93683d9b method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P2021 message="The table `User` does not exist in the current database."
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && DATABASE_URL='mysql://root:root@localhost:3306/praditacare_kosong' npx -w @praditacare/api prisma migrate deploy 2>&1 | tail -1 && echo 'PERBAIKAN: npm run db:deploy (lalu npm run db:seed bila perlu data contoh)'
+All migrations have been successfully applied.
+PERBAIKAN: npm run db:deploy (lalu npm run db:seed bila perlu data contoh)
+[exit code: 0]
+
+$ curl -s -w '  <- HTTP %{http_code} (akun belum ada karena belum di-seed, tapi tidak error 500 lagi)\n' -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{"Email":"budi@student.pradita.ac.id","Password":"Pradita123!"}'
+{"Message":"Email atau password salah"}  <- HTTP 401 (akun belum ada karena belum di-seed, tapi tidak error 500 lagi)
+[exit code: 0]
+

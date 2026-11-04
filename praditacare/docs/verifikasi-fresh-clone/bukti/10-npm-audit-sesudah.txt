@@ -1,0 +1,49 @@
+# Langkah 10: audit dependency setelah perbaikan
+# Waktu: 2026-11-04 10:04:55 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && npm audit --omit=dev; echo "(exit code npm audit --omit=dev: $?)"
+# npm audit report
+
+deepmerge-ts  <8.0.0
+Severity: high
+DeepmergeTS has stack exhaustion when merging recursive object graphs - https://github.com/advisories/GHSA-ggr8-5vv4-36mx
+fix available via `npm audit fix --force`
+Will install prisma@7.10.1, which is a breaking change
+node_modules/deepmerge-ts
+  @prisma/config  6.13.0-dev.1 - 7.10.0 || 8.1.0-dev.1 - 8.1.0-dev.4
+  Depends on vulnerable versions of deepmerge-ts
+  node_modules/@prisma/config
+    prisma  6.13.0-dev.1 - 7.10.0 || 8.0.0-rc.3 - 8.1.0-dev.4
+    Depends on vulnerable versions of @prisma/config
+    node_modules/prisma
+
+3 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+(exit code npm audit --omit=dev: 1)
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && npm audit; echo "(exit code npm audit: $?; sisa temuan ada di Prisma CLI, lihat HASIL-UJI-SECURITY.md)"
+# npm audit report
+
+deepmerge-ts  <8.0.0
+Severity: high
+DeepmergeTS has stack exhaustion when merging recursive object graphs - https://github.com/advisories/GHSA-ggr8-5vv4-36mx
+fix available via `npm audit fix --force`
+Will install prisma@7.10.1, which is a breaking change
+node_modules/deepmerge-ts
+  @prisma/config  6.13.0-dev.1 - 7.10.0 || 8.1.0-dev.1 - 8.1.0-dev.4
+  Depends on vulnerable versions of deepmerge-ts
+  node_modules/@prisma/config
+    prisma  6.13.0-dev.1 - 7.10.0 || 8.0.0-rc.3 - 8.1.0-dev.4
+    Depends on vulnerable versions of @prisma/config
+    node_modules/prisma
+
+3 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+(exit code npm audit: 1; sisa temuan ada di Prisma CLI, lihat HASIL-UJI-SECURITY.md)
+[exit code: 0]
+

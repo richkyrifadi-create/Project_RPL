@@ -1,0 +1,54 @@
+# Langkah 5: .env dan database (migrasi + seed)
+# Waktu: 2026-11-04 10:04:12 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && cp .env.example .env && sed -i 's#/praditacare"#/praditacare_fresh"#' .env && grep DATABASE_URL .env
+DATABASE_URL="mysql://root:root@localhost:3306/praditacare_fresh"
+[exit code: 0]
+
+$ mysql -uroot -proot -e 'DROP DATABASE IF EXISTS praditacare_fresh; CREATE DATABASE praditacare_fresh;' && echo 'database kosong praditacare_fresh dibuat'
+database kosong praditacare_fresh dibuat
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && npm run db:deploy
+
+> praditacare@1.0.0 db:deploy
+> npm run db:deploy -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 db:deploy
+> dotenv -e ../../.env -- prisma migrate deploy
+
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "praditacare_fresh" at "localhost:3306"
+
+2 migrations found in prisma/migrations
+
+Applying migration `20261103182703_init`
+Applying migration `20261103185319_tambah_lokasi_laporan`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261103182703_init/
+    └─ migration.sql
+  └─ 20261103185319_tambah_lokasi_laporan/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && npm run db:seed
+
+> praditacare@1.0.0 db:seed
+> npm run db:seed -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 db:seed
+> dotenv -e ../../.env -- tsx prisma/seed.ts
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+[exit code: 0]
+

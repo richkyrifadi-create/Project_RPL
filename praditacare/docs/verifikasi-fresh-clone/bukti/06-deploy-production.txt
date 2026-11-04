@@ -1,0 +1,107 @@
+# Langkah 6: deploy production (npm start: web + API di satu port 4000)
+# Waktu: 2026-11-04 10:04:14 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+## 6a. Pengaman: production DITOLAK bila JWT_SECRET masih nilai contoh
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && sed -i 's/^NODE_ENV=.*/NODE_ENV="production"/' .env && npm start; echo "(npm start berhenti dengan exit code $?, sesuai harapan)"
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+file:///home/claude/fresh-clone/Project_RPL/praditacare/apps/api/dist/Config.js:16
+    throw new Error(`Konfigurasi production tidak aman: ${problems.join("; ")}. Lihat README bagian Deploy.`);
+          ^
+
+Error: Konfigurasi production tidak aman: JWT_SECRET masih memakai nilai contoh dari .env.example. Lihat README bagian Deploy.
+    at file:///home/claude/fresh-clone/Project_RPL/praditacare/apps/api/dist/Config.js:16:11
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.4
+npm error Lifecycle script `start` failed with error:
+npm error code 1
+npm error path /home/claude/fresh-clone/Project_RPL/praditacare/apps/api
+npm error workspace @praditacare/api@1.0.0
+npm error location /home/claude/fresh-clone/Project_RPL/praditacare/apps/api
+npm error command failed
+npm error command sh -c node --env-file=../../.env dist/index.js
+(npm start berhenti dengan exit code 1, sesuai harapan)
+[exit code: 0]
+
+## 6b. Buat JWT_SECRET acak (npm run gen:secret), atur CORS, lalu deploy
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && SECRET=$(npm run -s gen:secret) && sed -i "s/^JWT_SECRET=.*/JWT_SECRET=\"$SECRET\"/" .env && sed -i 's#^CORS_ORIGIN=.*#CORS_ORIGIN="http://localhost:4000"#' .env && grep -v '^#' .env | sed -E 's/(JWT_SECRET=")(.{6}).*(")/\1\2...disamarkan...\3/'
+DATABASE_URL="mysql://root:root@localhost:3306/praditacare_fresh"
+JWT_SECRET="d1e6ea...disamarkan..."
+JWT_EXPIRES_IN="8h"
+UPLOAD_DIR="uploads"
+MAX_UPLOAD_MB=5
+PORT=4000
+CORS_ORIGIN="http://localhost:4000"
+NODE_ENV="production"
+TRUST_PROXY=0
+[exit code: 0]
+
+$ echo 'npm start dijalankan di latar belakang; log server -> 12-log-server-production.txt'
+npm start dijalankan di latar belakang; log server -> 12-log-server-production.txt
+[exit code: 0]
+
+server siap (health OK)
+$ curl -s -i http://localhost:4000/api/health
+HTTP/1.1 200 OK
+Content-Security-Policy: default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Resource-Policy: same-origin
+Origin-Agent-Cluster: ?1
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-DNS-Prefetch-Control: off
+X-Download-Options: noopen
+X-Frame-Options: SAMEORIGIN
+X-Permitted-Cross-Domain-Policies: none
+X-XSS-Protection: 0
+X-Request-Id: 1940ce84
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 15
+ETag: W/"f-SVhjz+UIxrBftSidu7AOUpKrPCs"
+Date: Wed, 04 Nov 2026 10:04:15 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"Status":"OK"}[exit code: 0]
+
+$ curl -s http://localhost:4000/ | head -c 420; echo
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PraditaCare</title>
+    <script type="module" crossorigin src="/assets/index-BpBnNpqt.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BheyBwf6.css">
+  </head>
+  <body class="bg-slate-50">
+    <div id="root"></div>
+  </body>
+</html>
+
+[exit code: 0]
+
+$ curl -s -o /dev/null -w 'GET /tiket-saya (rute web, SPA fallback) -> HTTP %{http_code}\n' http://localhost:4000/tiket-saya
+GET /tiket-saya (rute web, SPA fallback) -> HTTP 200
+[exit code: 0]
+
+$ curl -s -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{"Email":"admin@pradita.ac.id","Password":"Pradita123!"}' | node -e 'const j=JSON.parse(require("fs").readFileSync(0));console.log("login admin OK, role:",j.User.Role,"| token diterima ("+j.AccessToken.length+" karakter, tidak ditampilkan)")'
+login admin OK, role: ADMIN | token diterima (141 karakter, tidak ditampilkan)
+[exit code: 0]
+
+$ WEB_URL=http://localhost:4000 node /home/claude/fresh-clone/Project_RPL/praditacare/docs/verifikasi-fresh-clone/login-check.cjs
+browser: buka http://localhost:4000 -> login budi -> /tiket-saya tampil "Tiket Saya"
+error konsol browser: tidak ada
+[exit code: 0]
+

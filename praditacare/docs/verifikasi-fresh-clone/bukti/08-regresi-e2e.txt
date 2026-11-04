@@ -1,0 +1,45 @@
+# Langkah 8: regresi semua skrip end-to-end terhadap server production; tiap skrip memakai database yang baru di-seed karena skrip mengubah data
+# Waktu: 2026-11-04 10:04:18 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/e2e-test.mjs /home/claude/fresh-clone/pdf 2>&1 | tail -3
+
+42 lulus, 0 gagal
+{"TotalTickets":14,"OpenTickets":5,"InProgressTickets":4,"ResolvedTickets":4,"OverdueTickets":2,"AverageFirstResponseHours":5.6,"AverageResolutionHours":50,"SlaComplianceRate":57.1,"AverageRating":4.7}
+[exit code: 0]
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/mvp-v1/verify-fitur-1.mjs 2>&1 | tail -3
+PASS AC6 admin mengaktifkan wajib lokasi untuk Wi-Fi
+
+13 PASS, 0 FAIL
+[exit code: 0]
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/mvp-v1/verify-fitur-2.mjs 2>&1 | tail -3
+PASS AC5 mahasiswa akses dashboard -> 403
+
+13 PASS, 0 FAIL
+[exit code: 0]
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/mvp-penyempurnaan/verify-user-stories.mjs 2>&1 | tail -3
+PASS US5-AC4 staf melihat komentar internal
+
+29 PASS, 0 FAIL
+[exit code: 0]
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/mvp-final/verify-tambahan.mjs 2>&1 | tail -3
+PASS route tidak ada -> 404 
+
+20 PASS, 0 FAIL
+[exit code: 0]
+
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api WEB_URL=http://localhost:4000 node docs/demo/verify-ui-states.cjs 2>&1 | tail -3
+PASS dashboard gagal dimuat -> pesan error
+
+18 PASS, 0 FAIL
+[exit code: 0]
+

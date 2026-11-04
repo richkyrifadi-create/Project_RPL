@@ -1,0 +1,60 @@
+# Langkah 7: uji security lewat HTTP terhadap server production (database baru di-seed)
+# Waktu: 2026-11-04 10:04:16 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && API_URL=http://localhost:4000/api node docs/security/verify-security.mjs
+== Uji security PraditaCare terhadap http://localhost:4000/api
+
+-- 1. Header keamanan (helmet)
+PASS X-Content-Type-Options: nosniff
+PASS X-Frame-Options ada (anti clickjacking)
+PASS Content-Security-Policy ada
+PASS Referrer-Policy ada
+PASS X-Powered-By (Express) disembunyikan
+PASS X-Request-Id dikirim untuk pelacakan log
+
+-- 2. Autentikasi
+PASS tanpa token -> 401
+PASS token palsu (secret salah) -> 401
+PASS token alg=none -> 401
+PASS password salah & email tak terdaftar -> pesan sama (tidak bocorkan akun)
+PASS login akun seed berhasil
+PASS /auth/me tidak mengirim PasswordHash
+PASS /users (admin) tidak mengirim PasswordHash
+
+-- 3. Otorisasi (peran & data milik orang lain)
+PASS mahasiswa -> GET /users -> 403
+PASS mahasiswa -> GET /dashboard -> 403
+PASS staf -> POST /units -> 403
+PASS mahasiswa -> ubah status tiket -> 403
+PASS siti membuka tiket milik budi -> 404
+PASS siti mengomentari tiket milik budi -> 404
+PASS staf IT membuka tiket unit Sarpras -> 404
+
+-- 4. Validasi input
+PASS SQL injection di Keyword tidak membocorkan tiket lain
+PASS mass assignment Status/ReporterId diabaikan (tetap OPEN & milik budi)
+PASS teks <script> disimpan apa adanya sebagai data JSON (di-escape oleh React saat tampil)
+PASS Id bukan angka -> 422 tanpa stack trace
+PASS JSON rusak -> 400 tanpa stack trace
+PASS body JSON > 1 MB -> 413
+PASS komentar > 5000 karakter -> 422
+
+-- 5. Upload file
+PASS HTML yang diganti nama jadi foto.png -> 400
+PASS file .exe -> 400
+PASS PDF yang mengaku JPG -> 400
+PASS file kosong -> 400
+PASS PNG asli diterima -> 201
+PASS nama file dibersihkan dari path traversal
+PASS pemilik bisa unduh lampiran (200, image/png, nosniff)
+PASS siti mengunduh lampiran milik budi -> 404
+PASS unduh lampiran tanpa login -> 401
+
+-- 6. Rate limit login
+PASS 5 percobaan gagal pertama -> 401
+PASS percobaan berikutnya diblokir -> 429 + Retry-After
+PASS akun lain tetap bisa login normal
+
+Hasil: 39 PASS, 0 FAIL
+[exit code: 0]
+
