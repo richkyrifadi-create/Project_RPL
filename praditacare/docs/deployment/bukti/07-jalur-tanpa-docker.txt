@@ -1,0 +1,60 @@
+# Jalur tanpa Docker: Nginx host + Node (setara deploy/systemd/praditacare.service) + MariaDB lokal
+# Waktu: 2026-11-04 16:44:46 UTC | OS: Linux 6.18.44-fc-v233 x86_64 | Node v22.23.4 | nginx version: nginx/1.24.0 (Ubuntu) | MariaDB 10.11.14-MariaDB
+# Catatan: sandbox uji tidak menjalankan systemd sebagai PID 1, jadi ExecStart unit dijalankan manual dengan
+# isi .env produksi yang sama (EnvironmentFile). Unit file dicek dengan systemd-analyze verify.
+
+$ systemd-analyze verify deploy/systemd/praditacare.service
+[exit code: 0]
+(Sebelumnya ExecStart=/usr/bin/node gagal di sandbox karena Node ada di /opt/node22/bin; diganti
+ /usr/bin/env node agar memakai node mana pun yang ada di PATH.)
+
+$ sudo bash deploy/scripts/buat-sertifikat.sh 127.0.0.1 /etc/nginx/ssl/praditacare
+Sertifikat self-signed untuk 127.0.0.1 dibuat di /etc/nginx/ssl/praditacare (fullchain.pem, privkey.pem).
+subject=CN = 127.0.0.1, O = PraditaCare
+notAfter=Nov  4 16:44:46 2027 GMT
+
+$ sudo cp deploy/nginx/praditacare-host.conf /etc/nginx/sites-available/praditacare
+$ sudo ln -sf /etc/nginx/sites-available/praditacare /etc/nginx/sites-enabled/ && sudo rm -f /etc/nginx/sites-enabled/default
+$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+[exit code: 0]
+
+$ sudo systemctl reload nginx   (di sandbox: nginx)
+[exit code: 0]
+
+$ cd apps/api && node dist/index.js   (ExecStart, env dari .env produksi)
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T16:44:46.901Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+
+$ bash deploy/scripts/cek-online.sh https://127.0.0.1/praditacare
+Cek deploy: https://127.0.0.1/praditacare  (2026-11-04 16:44:47 UTC)
+PASS  HTTP dialihkan ke HTTPS
+PASS  Root / dialihkan ke /praditacare/
+PASS  /praditacare tanpa garis miring dialihkan
+PASS  Halaman utama /praditacare/ (200)
+PASS  HTML memuat aset dari /praditacare/assets/
+PASS  File JavaScript aplikasi termuat
+PASS  Route React langsung (/praditacare/login)
+PASS  API health /praditacare/api/health
+PASS  API tanpa token ditolak (401)
+PASS  Login akun demo budi@student.pradita.ac.id
+PASS  Daftar tiket dengan token (200)
+PASS  Header keamanan HSTS ada
+PASS  Versi Nginx disembunyikan
+Hasil: 13 PASS, 0 FAIL
+[exit code: 0]
+
+$ DEPLOY_URL=https://127.0.0.1/praditacare node docs/deployment/cek-browser-subpath.cjs <folder-sementara>
+PASS  Buka /praditacare/ menampilkan halaman login (https://127.0.0.1/praditacare/login)
+PASS  Login mahasiswa -> Tiket Saya di bawah sub-path (https://127.0.0.1/praditacare/tiket-saya)
+PASS  Navigasi menu ke Buat Tiket tetap di sub-path (/praditacare/tiket-baru)
+PASS  Upload lampiran lewat /praditacare/api (201) (status 201)
+PASS  Refresh langsung URL detail tiket (deep link) berhasil (/praditacare/tiket/13)
+PASS  Logout kembali ke /praditacare/login
+PASS  Staf membuka antrian lewat sub-path (https://127.0.0.1/praditacare/antrian)
+PASS  Admin membuka dashboard lewat sub-path (https://127.0.0.1/praditacare/dashboard)
+PASS  Semua request browser tetap di bawah sub-path
+PASS  Tidak ada error konsol browser
+Hasil: 10 PASS, 0 FAIL. Screenshot: (folder sementara, tidak disimpan)
+[exit code: 0]

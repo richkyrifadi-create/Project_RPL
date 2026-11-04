@@ -1,0 +1,13 @@
+$ DEPLOY_URL=https://127.0.0.1/praditacare node docs/deployment/cek-browser-subpath.cjs
+PASS  Buka /praditacare/ menampilkan halaman login (https://127.0.0.1/praditacare/login)
+PASS  Login mahasiswa -> Tiket Saya di bawah sub-path (https://127.0.0.1/praditacare/tiket-saya)
+PASS  Navigasi menu ke Buat Tiket tetap di sub-path (/praditacare/tiket-baru)
+PASS  Upload lampiran lewat /praditacare/api (201) (status 201)
+PASS  Refresh langsung URL detail tiket (deep link) berhasil (/praditacare/tiket/13)
+PASS  Logout kembali ke /praditacare/login
+PASS  Staf membuka antrian lewat sub-path (https://127.0.0.1/praditacare/antrian)
+PASS  Admin membuka dashboard lewat sub-path (https://127.0.0.1/praditacare/dashboard)
+PASS  Semua request browser tetap di bawah sub-path
+PASS  Tidak ada error konsol browser
+Hasil: 10 PASS, 0 FAIL. Screenshot: docs/deployment/bukti/screenshots
+[exit code: 0]

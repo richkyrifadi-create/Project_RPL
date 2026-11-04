@@ -1,0 +1,86 @@
+# Build image Docker produksi + menyalakan stack (MariaDB + app + Nginx HTTPS)
+# Waktu: 2026-11-04 16:42:59 UTC | OS: Linux 6.18.44-fc-v233 x86_64 | Docker 29.9.2
+# Catatan sandbox uji: mirror Debian dan Docker Hub diblokir/rate-limit di sandbox ini, sehingga base image
+# node:22-bookworm-slim diganti stand-in node:22-bookworm (sudah berisi openssl) + CA proxy sandbox. Dockerfile di repo
+# tidak diubah; di VPS/Raspberry Pi sungguhan base image asli ditarik normal dari Docker Hub.
+
+$ docker build --network host -t praditacare-app:latest --build-arg VITE_BASE_PATH=/praditacare/ .
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#2 DONE 0.0s
+#3 [internal] load .dockerignore
+#3 DONE 0.0s
+#4 [internal] load build context
+#4 DONE 0.0s
+#5 [ 1/13] FROM docker.io/library/node:22-bookworm-slim@sha256:808d5d647b7558b84830b229e9d87774e57efff3e98e29d463b8fa41b5f0d78e
+#5 DONE 0.0s
+#6 [ 2/13] RUN apt-get update   && apt-get install -y --no-install-recommends openssl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#6 DONE 7.1s
+#7 [ 3/13] WORKDIR /app
+#7 DONE 0.0s
+#8 [ 4/13] COPY package.json package-lock.json tsconfig.base.json ./
+#8 DONE 0.0s
+#9 [ 5/13] COPY packages/shared/package.json packages/shared/
+#9 DONE 0.0s
+#10 [ 6/13] COPY apps/api/package.json apps/api/
+#10 DONE 0.0s
+#11 [ 7/13] COPY apps/web/package.json apps/web/
+#11 DONE 0.0s
+#12 [ 8/13] COPY apps/api/prisma apps/api/prisma
+#12 DONE 0.0s
+#13 [ 9/13] RUN npm ci --no-fund --no-audit
+#13 DONE 10.3s
+#14 [10/13] COPY . .
+#14 DONE 0.1s
+#15 [11/13] RUN npm run build
+#15 0.140 > npm run build -w @praditacare/shared && npm run build -w @praditacare/api && npm run build -w @praditacare/web
+#15 8.663 ✓ 189 modules transformed.
+#15 8.841 ✓ built in 1.81s
+#15 DONE 8.9s
+#16 [12/13] RUN chmod +x deploy/docker/entrypoint.sh && mkdir -p /data/uploads && chown -R node:node /data /app/apps/api
+#16 DONE 0.1s
+#17 [13/13] WORKDIR /app/apps/api
+#17 DONE 0.0s
+#18 naming to docker.io/library/praditacare-app:latest done
+#18 DONE 18.4s
+[exit code: 0]
+
+$ docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d
+(stack dinyalakan ulang dari volume kosong: down -v lalu up -d)
+
+$ docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env ps
+NAME                  IMAGE                    COMMAND                  SERVICE   CREATED              STATUS                        PORTS
+praditacare-app-1     praditacare-app:latest   "/app/deploy/docker/…"   app       About a minute ago   Up 57 seconds (healthy)       4000/tcp
+praditacare-db-1      mariadb:11.4             "docker-entrypoint.s…"   db        About a minute ago   Up About a minute (healthy)   3306/tcp
+praditacare-nginx-1   nginx:1.27-alpine        "/docker-entrypoint.…"   nginx     About a minute ago   Up 51 seconds                 0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp
+
+$ docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env logs app
+[entrypoint] Menjalankan migrasi database (prisma migrate deploy)...
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "praditacare" at "db:3306"
+
+2 migrations found in prisma/migrations
+
+Applying migration `20261103182703_init`
+Applying migration `20261103185319_tambah_lokasi_laporan`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261103182703_init/
+    └─ migration.sql
+  └─ 20261103185319_tambah_lokasi_laporan/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[entrypoint] SEED_DEMO_DATA=true: mengisi data demo (akun reviewer)...
+Seed selesai: 5 unit, 8 kategori, 9 user, 13 tiket. Password semua akun: Pradita123!
+[entrypoint] Menyalakan PraditaCare di port 4000
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T16:42:04.858Z INFO  server.start mode=production port=4000 web="disajikan oleh API"

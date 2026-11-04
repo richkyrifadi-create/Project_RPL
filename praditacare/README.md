@@ -83,6 +83,17 @@ Seed berisi 5 unit, 8 kategori (Konseling Pribadi bersifat rahasia), dan 13 tike
 - Maksimal 5 file per unggahan, hanya JPG, PNG, PDF.
 - File tidak disajikan sebagai folder statis. Unduh lewat `GET /api/attachments/:Id/download` yang memeriksa hak akses.
 
+## Deploy online (`https://<ip>/praditacare`)
+
+Paket produksi ada di folder `deploy/` (Docker Compose + Nginx HTTPS + systemd). Panduan dan bukti uji: [`docs/deployment/`](docs/deployment/README.md) ([VPS](docs/deployment/DEPLOY-VPS.md), [Raspberry Pi / Orange Pi](docs/deployment/DEPLOY-RASPBERRY-PI.md)). Ringkasnya:
+
+```bash
+cp deploy/.env.production.example deploy/.env      # isi IP, JWT_SECRET, password DB
+bash deploy/scripts/buat-sertifikat.sh <IP>
+docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d --build
+bash deploy/scripts/cek-online.sh https://<IP>/praditacare
+```
+
 ## Job terjadwal
 
 Tiket `RESOLVED` tanpa feedback ditutup otomatis setelah 7 hari. Job berjalan tiap jam (node-cron) saat API hidup, dan bisa dipicu manual dengan `npm run job:auto-close -w @praditacare/api`.
