@@ -5,9 +5,12 @@ import { App } from "./App";
 import { AuthProvider } from "./auth/AuthContext";
 import "./index.css";
 
+// Saat dideploy di sub-path (mis. /praditacare) semua route React berada di bawah awalan itu.
+const RouterBase = import.meta.env.BASE_URL.replace(/\/+$/, "") || "/";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={RouterBase}>
       <AuthProvider>
         <App />
       </AuthProvider>

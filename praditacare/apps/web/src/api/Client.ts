@@ -17,6 +17,9 @@ export const OnUnauthorized = (handler: () => void) => {
   unauthorizedHandler = handler;
 };
 
+/** Awalan URL API mengikuti base path build (mis. "/praditacare/api" saat deploy di sub-path). */
+export const ApiBase = `${import.meta.env.BASE_URL.replace(/\/+$/, "")}/api`;
+
 export function GetToken(): string | null {
   try {
     return localStorage.getItem(TokenKey);
@@ -44,7 +47,7 @@ async function Request(path: string, init: RequestInit = {}): Promise<Response> 
   if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
   let response: Response;
   try {
-    response = await fetch(`/api${path}`, { ...init, headers });
+    response = await fetch(`${ApiBase}${path}`, { ...init, headers });
   } catch {
     throw new ApiError(0, "Tidak dapat terhubung ke server. Pastikan backend berjalan.");
   }
