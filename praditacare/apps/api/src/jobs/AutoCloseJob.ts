@@ -1,6 +1,7 @@
 import cron from "node-cron";
 import { AutoCloseDays, AutoCloseThreshold } from "@praditacare/shared";
 import { prisma } from "../Prisma.js";
+import { Log, SafeErrorFields } from "../security/SafeLog.js";
 import { ApplyStatusChange } from "../services/TicketService.js";
 
 export async function AutoCloseResolvedTickets(): Promise<number> {
@@ -22,8 +23,8 @@ export async function AutoCloseResolvedTickets(): Promise<number> {
 export function StartAutoCloseJob() {
   const run = () =>
     AutoCloseResolvedTickets()
-      .then((count) => count && console.log(`[AutoClose] ${count} tiket ditutup otomatis`))
-      .catch((err) => console.error("[AutoClose] gagal", err));
+      .then((count) => count && Log.Info("job.auto_close", { closed: count }))
+      .catch((err) => Log.Error("job.auto_close_failed", SafeErrorFields(err, false)));
   run();
   cron.schedule("0 * * * *", run, { timezone: "Asia/Jakarta" });
 }
