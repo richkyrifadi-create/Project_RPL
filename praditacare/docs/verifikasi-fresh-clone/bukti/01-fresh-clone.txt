@@ -1,0 +1,36 @@
+# Langkah 1: fresh clone repo dari GitHub (branch claude/project-thread-10octk)
+# Waktu: 2026-11-04 10:03:46 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+$ cd /home/claude/fresh-clone && git clone --branch claude/project-thread-10octk https://github.com/richkyrifadi-create/Project_RPL.git
+Cloning into 'Project_RPL'...
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL && git log --oneline -3 && ls
+752eca8 fix(api): 503 saat database tidak terjangkau; docs: hasil uji security, log aman, README instalasi
+e2ea003 feat(api): log aman untuk port bentrok dan error Prisma, skrip verifikasi fresh clone
+4322296 fix(api): web hasil build hanya disajikan API di production (atau SERVE_WEB=true)
+Dok_Arsitektur.md
+HowToRun.md
+README.md
+checklist_mvp.md
+demo.mp4
+praditacare
+[exit code: 0]
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && ls -a && test ! -e .env && echo '.env tidak ikut ter-clone: benar, rahasia tidak disimpan di repo'
+.
+..
+.env.example
+.gitignore
+README.md
+apps
+docker-compose.yml
+docs
+package-lock.json
+package.json
+packages
+tsconfig.base.json
+vitest.config.mts
+.env tidak ikut ter-clone: benar, rahasia tidak disimpan di repo
+[exit code: 0]
+

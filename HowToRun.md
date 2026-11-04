@@ -39,6 +39,17 @@ npm run dev
 
 Perintah ini menyalakan tiga proses sekaligus: shared (watch), API di http://localhost:4000, dan web di http://localhost:5173. Buka **http://localhost:5173** di browser. Tunggu sampai log menampilkan `PraditaCare API berjalan di http://localhost:4000`.
 
+### Mode production (deploy)
+
+```bash
+npm run build                 # build shared + api + web
+npm run gen:secret            # salin hasilnya ke JWT_SECRET di .env
+# di .env: NODE_ENV="production", JWT_SECRET="<hasil gen:secret>", CORS_ORIGIN="http://localhost:4000"
+npm start                     # web + API di http://localhost:4000
+```
+
+Server menolak menyala bila `NODE_ENV=production` tetapi `JWT_SECRET` masih nilai contoh. Panduan lengkap fresh clone, deploy, dan akses demo ada di [README.md](README.md).
+
 ## 4. Akun untuk mencoba
 
 Semua password: **`Pradita123!`** (halaman login juga punya tombol akun demo).
@@ -66,7 +77,7 @@ Semua password: **`Pradita123!`** (halaman login juga punya tombol akun demo).
 Dari folder `praditacare/`:
 
 ```bash
-npm test               # 96 unit test (Vitest), tidak butuh database
+npm test               # 119 unit test (Vitest), tidak butuh database
 npm run typecheck      # cek tipe TypeScript shared + api + web
 ```
 
@@ -79,6 +90,7 @@ node docs/mvp-v1/verify-fitur-2.mjs                       # 13 cek dashboard lok
 node docs/mvp-penyempurnaan/verify-user-stories.mjs       # 29 cek 5 user story
 node docs/demo/verify-ui-states.cjs                       # 18 cek UI: input salah, kosong, loading, gagal (butuh Playwright)
 node docs/mvp-final/verify-tambahan.mjs                  # 20 cek: ganti password, prioritas, pindah kategori, master data, input salah
+API_URL=http://localhost:5173/api node docs/security/verify-security.mjs   # 39 cek security (default http://localhost:4000/api)
 ```
 
 Untuk mengulang data dari nol (menghapus semua data, **hanya untuk database development**):
@@ -107,6 +119,9 @@ ffmpeg -i demo-out/demo.webm -c:v libx264 -crf 26 -pix_fmt yuv420p -movflags +fa
 | `MAX_UPLOAD_MB` | `5` | Ukuran maksimal per file |
 | `PORT` | `4000` | Port API |
 | `CORS_ORIGIN` | `http://localhost:5173` | Asal web yang diizinkan |
+| `NODE_ENV` | `development` | `production` untuk deploy (`npm start`): web disajikan API, secret diperiksa |
+| `TRUST_PROXY` | `0` | Isi `1` bila di belakang reverse proxy (IP asli untuk rate limit login) |
+| `SERVE_WEB` | otomatis | `true` = API menyajikan web hasil build walau bukan production |
 
 ## 9. Masalah umum
 

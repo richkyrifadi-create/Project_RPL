@@ -1,5 +1,124 @@
 # PraditaCare
 
+Aplikasi web layanan bantuan dan pengaduan mahasiswa Universitas Pradita. Kode aplikasi ada di folder [`praditacare/`](praditacare/).
+
+**Dokumen penting:** [Cara menjalankan lengkap](HowToRun.md) · [Checklist MVP](checklist_mvp.md) · [Video demo](demo.mp4) · [Hasil uji security](praditacare/docs/security/HASIL-UJI-SECURITY.md) · [Log aman & penanganan error](praditacare/docs/security/LOG-AMAN-DAN-ERROR.md) · [Bukti verifikasi fresh clone](praditacare/docs/verifikasi-fresh-clone/RINGKASAN.md) · [Dokumen arsitektur](Dok_Arsitektur.md)
+
+---
+
+## Instalasi Ulang dari Fresh Clone, Build, Deploy, dan Akses Aplikasi
+
+Langkah di bawah sudah diuji dari clone baru ke folder kosong (Node 22, npm 10, MariaDB 10.11) dan semuanya berhasil: 119 unit test PASSED, build sukses, deploy production jalan, uji security 39/39 PASS, dan 6 skrip regresi end-to-end PASS. Bukti terminalnya ada di [`praditacare/docs/verifikasi-fresh-clone/bukti/`](praditacare/docs/verifikasi-fresh-clone/bukti/).
+
+### 1. Prasyarat
+
+| Kebutuhan | Versi | Catatan |
+| --- | --- | --- |
+| Git | apa saja | |
+| Node.js + npm | Node **20.6+** (disarankan 22), npm 10+ | `node -v` untuk cek |
+| Database | MySQL 8 lewat **Docker Desktop**, atau MySQL/MariaDB 10.11+ yang sudah terpasang | default user `root`, password `root`, port 3306 |
+
+### 2. Clone dan install
+
+```bash
+git clone https://github.com/richkyrifadi-create/Project_RPL.git
+cd Project_RPL/praditacare
+
+cp .env.example .env        # Windows (cmd): copy .env.example .env
+docker compose up -d        # menyalakan MySQL; lewati bila memakai MySQL/MariaDB lokal
+npm ci                      # install persis sesuai package-lock.json (sekaligus prisma generate)
+```
+
+Tanpa Docker: buat database kosong `praditacare` di MySQL/MariaDB Anda, lalu sesuaikan `DATABASE_URL` di `.env`, misalnya `mysql://root:passwordanda@localhost:3306/praditacare`.
+
+### 3. Siapkan database
+
+```bash
+npm run db:deploy           # membuat semua tabel (Prisma migration)
+npm run db:seed             # data demo: 5 unit, 8 kategori, 9 akun, 13 tiket
+```
+
+### 4. Jalankan unit test
+
+```bash
+npm test                    # 119 unit test (Vitest), tidak butuh database
+npm run typecheck           # cek tipe TypeScript shared + api + web
+```
+
+### 5a. Menjalankan untuk development
+
+```bash
+npm run dev
+```
+
+Buka **http://localhost:5173**. Web (Vite) di port 5173 dan API di port 4000 menyala bersamaan, perubahan kode langsung terlihat.
+
+### 5b. Build dan deploy (mode production)
+
+Di mode production, API sekaligus menyajikan web hasil build, sehingga cukup **satu proses di satu port**.
+
+```bash
+npm run build               # build shared + api + web
+npm run gen:secret          # buat secret acak, salin hasilnya
+```
+
+Lalu ubah `.env`:
+
+```env
+NODE_ENV="production"
+JWT_SECRET="<tempel hasil gen:secret, minimal 32 karakter>"
+CORS_ORIGIN="http://localhost:4000"     # atau alamat domain server, mis. https://care.pradita.ac.id
+```
+
+```bash
+npm start                   # menyalakan aplikasi di http://localhost:4000
+```
+
+Buka **http://localhost:4000**. Server sengaja **menolak menyala** bila `NODE_ENV=production` tetapi `JWT_SECRET` masih nilai contoh.
+
+Untuk server sungguhan (VPS/kampus): jalankan langkah yang sama di server, pasang reverse proxy HTTPS (Nginx/Caddy) yang meneruskan ke port 4000 lalu isi `TRUST_PROXY=1`, jalankan `npm start` dengan pengelola proses (mis. `pm2 start npm --name praditacare -- start`), dan **jangan** jalankan `db:seed` (akun demo memakai password yang diketahui umum).
+
+### 6. Akses aplikasi dan paket demo
+
+| Mode | Alamat |
+| --- | --- |
+| Development (`npm run dev`) | http://localhost:5173 |
+| Production (`npm start`) | http://localhost:4000 |
+| Cek API hidup | http://localhost:4000/api/health → `{"Status":"OK"}` |
+
+Akun demo dari seed, semua password **`Pradita123!`** (halaman login juga punya tombol akun demo):
+
+| Peran | Email |
+| --- | --- |
+| Mahasiswa | budi@student.pradita.ac.id, siti@student.pradita.ac.id, andi@student.pradita.ac.id |
+| Staf Sarana Prasarana | staf.sarpras@pradita.ac.id |
+| Staf IT | staf.it@pradita.ac.id |
+| Staf Akademik / Keuangan / Konseling | staf.akademik@pradita.ac.id, staf.keuangan@pradita.ac.id, staf.konseling@pradita.ac.id |
+| Admin | admin@pradita.ac.id |
+
+Paket demo yang tersedia di repo:
+
+- [`demo.mp4`](demo.mp4): video alur lengkap (2 menit 38 detik): mahasiswa membuat tiket, staf memproses, mahasiswa memberi rating, admin melihat dashboard. Alur yang sama tertulis di [HowToRun.md bagian 5](HowToRun.md).
+- Data seed di atas: langsung bisa dicoba tanpa input manual.
+- Skrip uji yang bisa dijalankan ulang (server menyala + database baru di-seed): `node docs/security/verify-security.mjs`, skrip end-to-end di `docs/`, dan verifikasi penuh dari fresh clone `bash docs/verifikasi-fresh-clone/verify-fresh.sh main /tmp/praditacare-fresh ./bukti`.
+
+### 7. Masalah yang sering muncul
+
+| Gejala | Solusi |
+| --- | --- |
+| `node: ../../.env: not found` | Belum membuat `.env`: `cp .env.example .env`. |
+| `Can't reach database server` / respons 503 "Database sedang tidak dapat dihubungi" | MySQL belum menyala: `docker compose up -d`, tunggu ±20 detik. |
+| `The table ... does not exist` | Migrasi belum dijalankan: `npm run db:deploy`. |
+| `Database sudah berisi data` saat seed | Seed hanya untuk database kosong; ulangi dengan `npm run db:reset -w @praditacare/api` (menghapus semua data). |
+| `EADDRINUSE` / `port 4000 sudah dipakai` | Server lama masih jalan; hentikan, atau ubah `PORT` di `.env`. |
+| `Konfigurasi production tidak aman: JWT_SECRET ...` | Ganti `JWT_SECRET` dengan hasil `npm run gen:secret`. |
+| Login: "Terlalu banyak percobaan gagal" | Rate limit setelah 5 kali salah password; tunggu 15 menit. |
+
+Daftar lengkap error, contoh log, dan perbaikannya: [LOG-AMAN-DAN-ERROR.md](praditacare/docs/security/LOG-AMAN-DAN-ERROR.md).
+
+---
+
+
 ## Big Picture Permasalahan
 
 Di lingkungan kampus, berbagai permasalahan fasilitas dapat terjadi setiap hari, seperti AC yang tidak berfungsi, Wi-Fi bermasalah, lampu mati, fasilitas kelas rusak, toilet yang kurang terawat, hingga permasalahan pada area kampus.
@@ -109,7 +228,7 @@ Dengan adanya sistem ini, diharapkan permasalahan fasilitas dapat lebih mudah di
 
 ## Status Project
 
-**Planning / Development**
+**MVP Final: aplikasi sudah berjalan, teruji (119 unit test, uji security, regresi end-to-end), dan siap di-deploy.**
 
 Project ini dibuat untuk memenuhi tugas mata kuliah **Rekayasa Perangkat Lunak**.
 

@@ -1,4 +1,4 @@
-const B = "http://localhost:5173/api";
+const B = process.env.API_URL ?? "http://localhost:5173/api";
 const S = process.argv[2];
 import fs from "node:fs";
 let pass = 0, fail = 0;

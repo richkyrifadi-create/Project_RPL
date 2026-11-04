@@ -17,7 +17,7 @@ export const Authenticate = Handle(async (req: Request, _res: Response, next: Ne
   if (!token) throw new HttpError(401, "Silakan login terlebih dahulu");
   let payload: TokenPayload;
   try {
-    payload = jwt.verify(token, Config.JwtSecret) as TokenPayload;
+    payload = jwt.verify(token, Config.JwtSecret, { algorithms: ["HS256"] }) as TokenPayload;
   } catch {
     throw new HttpError(401, "Sesi berakhir, silakan login kembali");
   }
@@ -41,5 +41,5 @@ export function GetAuthUser(req: Request): AuthUser {
 }
 
 export function SignToken(userId: number): string {
-  return jwt.sign({ sub: String(userId) }, Config.JwtSecret, { expiresIn: Config.JwtExpiresIn as jwt.SignOptions["expiresIn"] });
+  return jwt.sign({ sub: String(userId) }, Config.JwtSecret, { algorithm: "HS256", expiresIn: Config.JwtExpiresIn as jwt.SignOptions["expiresIn"] });
 }

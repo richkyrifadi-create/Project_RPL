@@ -1,0 +1,28 @@
+# Langkah 9: mode development (npm run dev): web Vite :5173 + API :4000
+# Waktu: 2026-11-04 10:04:48 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+$ cd /home/claude/fresh-clone/Project_RPL/praditacare && sed -i 's/^NODE_ENV=.*/NODE_ENV="development"/' .env && sed -i 's#^CORS_ORIGIN=.*#CORS_ORIGIN="http://localhost:5173"#' .env && grep -E '^(NODE_ENV|CORS_ORIGIN)' .env
+CORS_ORIGIN="http://localhost:5173"
+NODE_ENV="development"
+[exit code: 0]
+
+$ grep -E 'berjalan|VITE|Local:|server.start' /home/claude/fresh-clone/dev.log | sed 's/\x1b\[[0-9;]*m//g'
+[web]   VITE v6.4.5  ready in 149 ms
+[web]   ➜  Local:   http://localhost:5173/
+[api] PraditaCare API berjalan di http://localhost:4000
+[api] 2026-11-04T10:04:51.959Z INFO  server.start mode=development port=4000 web="tidak disajikan (pakai Vite :5173)"
+[exit code: 0]
+
+$ curl -s -o /dev/null -w 'GET http://localhost:5173/ (web Vite) -> HTTP %{http_code}\n' http://localhost:5173/
+GET http://localhost:5173/ (web Vite) -> HTTP 200
+[exit code: 0]
+
+$ curl -s -w '  <- GET http://localhost:5173/api/health (proxy Vite ke API) HTTP %{http_code}\n' http://localhost:5173/api/health
+{"Status":"OK"}  <- GET http://localhost:5173/api/health (proxy Vite ke API) HTTP 200
+[exit code: 0]
+
+$ WEB_URL=http://localhost:5173 node /home/claude/fresh-clone/Project_RPL/praditacare/docs/verifikasi-fresh-clone/login-check.cjs
+browser: buka http://localhost:5173 -> login budi -> /tiket-saya tampil "Tiket Saya"
+error konsol browser: tidak ada
+[exit code: 0]
+

@@ -1,0 +1,394 @@
+# Log asli server production selama langkah 6-8 dan 11 (format log aman, ditulis oleh npm start)
+# Waktu: 2026-11-04 10:04:14 UTC | OS: Linux 6.18.44-fc-v233 | Folder kerja: /home/claude/fresh-clone
+
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:14.976Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:15.708Z INFO  auth.login_success reqId=d1130817 user=1 role=ADMIN
+2026-11-04T10:04:15.711Z INFO  http.request reqId=d1130817 method=POST path=/api/auth/login status=200 ms=81
+2026-11-04T10:04:16.884Z INFO  auth.login_success reqId=f1feab39 user=7 role=STUDENT
+2026-11-04T10:04:16.885Z INFO  http.request reqId=f1feab39 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:16.902Z INFO  http.request reqId=6a670f6d method=GET path=/api/dashboard/action-count status=200 ms=6 user=7
+2026-11-04T10:04:17.032Z WARN  http.request reqId=f58a6d27 method=GET path=/api/tickets status=401 ms=0
+2026-11-04T10:04:17.035Z WARN  http.request reqId=d8d2269a method=GET path=/api/auth/me status=401 ms=1
+2026-11-04T10:04:17.037Z WARN  http.request reqId=2f086fee method=GET path=/api/auth/me status=401 ms=0
+2026-11-04T10:04:17.107Z WARN  auth.login_failed reqId=2ec3cd45 ip=127.0.0.1 email=b***@student.pradita.ac.id reason="password salah"
+2026-11-04T10:04:17.108Z WARN  http.request reqId=2ec3cd45 method=POST path=/api/auth/login status=401 ms=67
+2026-11-04T10:04:17.178Z WARN  auth.login_failed reqId=d7ca14cd ip=127.0.0.1 email=t***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.179Z WARN  http.request reqId=d7ca14cd method=POST path=/api/auth/login status=401 ms=68
+2026-11-04T10:04:17.250Z INFO  auth.login_success reqId=efbb2842 user=7 role=STUDENT
+2026-11-04T10:04:17.251Z INFO  http.request reqId=efbb2842 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:17.322Z INFO  auth.login_success reqId=7c6b1082 user=8 role=STUDENT
+2026-11-04T10:04:17.323Z INFO  http.request reqId=7c6b1082 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:17.393Z INFO  auth.login_success reqId=f717945d user=5 role=STAFF
+2026-11-04T10:04:17.395Z INFO  http.request reqId=f717945d method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:17.466Z INFO  auth.login_success reqId=bdf9d792 user=1 role=ADMIN
+2026-11-04T10:04:17.467Z INFO  http.request reqId=bdf9d792 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:17.472Z INFO  http.request reqId=782bb1da method=GET path=/api/auth/me status=200 ms=2 user=7
+2026-11-04T10:04:17.477Z INFO  http.request reqId=229b680e method=GET path=/api/users status=200 ms=3 user=1
+2026-11-04T10:04:17.480Z WARN  http.request reqId=495a9781 method=GET path=/api/users status=403 ms=1 user=7
+2026-11-04T10:04:17.482Z WARN  http.request reqId=9e7119e8 method=GET path=/api/dashboard status=403 ms=1 user=7
+2026-11-04T10:04:17.485Z WARN  http.request reqId=aec2b48d method=POST path=/api/units status=403 ms=1 user=5
+2026-11-04T10:04:17.488Z WARN  http.request reqId=5ec6c10c method=PUT path=/api/tickets/1/status status=403 ms=1 user=7
+2026-11-04T10:04:17.493Z INFO  http.request reqId=6bece9ea method=GET path=/api/tickets status=200 ms=4 user=7
+2026-11-04T10:04:17.498Z WARN  http.request reqId=0134d2a6 method=GET path=/api/tickets/13 status=404 ms=3 user=8
+2026-11-04T10:04:17.502Z WARN  http.request reqId=d8c999b8 method=POST path=/api/tickets/13/comments status=404 ms=3 user=8
+2026-11-04T10:04:17.509Z INFO  http.request reqId=4cde4066 method=GET path=/api/tickets status=200 ms=5 user=1
+2026-11-04T10:04:17.514Z WARN  http.request reqId=3f610947 method=GET path=/api/tickets/12 status=404 ms=4 user=5
+2026-11-04T10:04:17.518Z INFO  http.request reqId=dc24e250 method=GET path=/api/categories status=200 ms=3 user=7
+2026-11-04T10:04:17.523Z INFO  http.request reqId=983eccdb method=GET path=/api/tickets status=200 ms=4 user=7
+2026-11-04T10:04:17.536Z INFO  http.request reqId=846c7997 method=POST path=/api/tickets status=201 ms=12 user=7
+2026-11-04T10:04:17.539Z WARN  http.request reqId=a2674936 method=GET path=/api/tickets/abc status=422 ms=2 user=7
+2026-11-04T10:04:17.542Z WARN  http.request reqId=a8d5ba52 method=POST path=/api/tickets/1/comments status=400 ms=0
+2026-11-04T10:04:17.552Z WARN  http.request reqId=48857bc9 method=POST path=/api/tickets/1/comments status=413 ms=2
+2026-11-04T10:04:17.556Z WARN  http.request reqId=8f9d010e method=POST path=/api/tickets/13/comments status=422 ms=2 user=7
+2026-11-04T10:04:17.566Z WARN  upload.rejected reqId=74eaf74b user=7 declared=image/png reason="isi file tidak sesuai jenisnya"
+2026-11-04T10:04:17.567Z WARN  http.request reqId=74eaf74b method=POST path=/api/tickets status=400 ms=7 user=7
+2026-11-04T10:04:17.571Z WARN  http.request reqId=f5daff75 method=POST path=/api/tickets status=400 ms=2 user=7
+2026-11-04T10:04:17.575Z WARN  upload.rejected reqId=8d8414c5 user=7 declared=image/jpeg reason="isi file tidak sesuai jenisnya"
+2026-11-04T10:04:17.576Z WARN  http.request reqId=8d8414c5 method=POST path=/api/tickets status=400 ms=3 user=7
+2026-11-04T10:04:17.579Z WARN  upload.rejected reqId=8359433e user=7 declared=image/png reason="isi file tidak sesuai jenisnya"
+2026-11-04T10:04:17.579Z WARN  http.request reqId=8359433e method=POST path=/api/tickets status=400 ms=2 user=7
+2026-11-04T10:04:17.591Z INFO  http.request reqId=0efee909 method=POST path=/api/tickets status=201 ms=10 user=7
+2026-11-04T10:04:17.598Z INFO  http.request reqId=bf571f15 method=GET path=/api/attachments/1/download status=200 ms=5 user=7
+2026-11-04T10:04:17.602Z WARN  http.request reqId=79fa58ef method=GET path=/api/attachments/1/download status=404 ms=3 user=8
+2026-11-04T10:04:17.603Z WARN  http.request reqId=16aeeb2a method=GET path=/api/attachments/1/download status=401 ms=0
+2026-11-04T10:04:17.671Z WARN  auth.login_failed reqId=925076fc ip=127.0.0.1 email=p***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.672Z WARN  http.request reqId=925076fc method=POST path=/api/auth/login status=401 ms=67
+2026-11-04T10:04:17.739Z WARN  auth.login_failed reqId=9dd48d64 ip=127.0.0.1 email=p***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.740Z WARN  http.request reqId=9dd48d64 method=POST path=/api/auth/login status=401 ms=66
+2026-11-04T10:04:17.807Z WARN  auth.login_failed reqId=d3482f8e ip=127.0.0.1 email=p***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.808Z WARN  http.request reqId=d3482f8e method=POST path=/api/auth/login status=401 ms=66
+2026-11-04T10:04:17.875Z WARN  auth.login_failed reqId=d02df7f9 ip=127.0.0.1 email=p***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.876Z WARN  http.request reqId=d02df7f9 method=POST path=/api/auth/login status=401 ms=66
+2026-11-04T10:04:17.943Z WARN  auth.login_failed reqId=684419dc ip=127.0.0.1 email=p***@pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:04:17.944Z WARN  http.request reqId=684419dc method=POST path=/api/auth/login status=401 ms=66
+2026-11-04T10:04:17.947Z WARN  auth.login_blocked reqId=fa39b529 ip=127.0.0.1 email=p***@pradita.ac.id retryAfter=900
+2026-11-04T10:04:17.947Z WARN  http.request reqId=fa39b529 method=POST path=/api/auth/login status=429 ms=0
+2026-11-04T10:04:17.949Z WARN  auth.login_blocked reqId=dee922a3 ip=127.0.0.1 email=p***@pradita.ac.id retryAfter=900
+2026-11-04T10:04:17.949Z WARN  http.request reqId=dee922a3 method=POST path=/api/auth/login status=429 ms=0
+2026-11-04T10:04:18.018Z INFO  auth.login_success reqId=06089221 user=4 role=STAFF
+2026-11-04T10:04:18.019Z INFO  http.request reqId=06089221 method=POST path=/api/auth/login status=200 ms=69
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:21.037Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:21.788Z INFO  auth.login_success reqId=290ccfa0 user=7 role=STUDENT
+2026-11-04T10:04:21.792Z INFO  http.request reqId=290ccfa0 method=POST path=/api/auth/login status=200 ms=85
+2026-11-04T10:04:21.870Z INFO  auth.login_success reqId=dc24499c user=8 role=STUDENT
+2026-11-04T10:04:21.872Z INFO  http.request reqId=dc24499c method=POST path=/api/auth/login status=200 ms=72
+2026-11-04T10:04:21.944Z INFO  auth.login_success reqId=0ac1d1c5 user=5 role=STAFF
+2026-11-04T10:04:21.945Z INFO  http.request reqId=0ac1d1c5 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:22.016Z INFO  auth.login_success reqId=b2798df6 user=2 role=STAFF
+2026-11-04T10:04:22.017Z INFO  http.request reqId=b2798df6 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:22.088Z INFO  auth.login_success reqId=9f4e2515 user=6 role=STAFF
+2026-11-04T10:04:22.089Z INFO  http.request reqId=9f4e2515 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:22.159Z INFO  auth.login_success reqId=502f5836 user=1 role=ADMIN
+2026-11-04T10:04:22.160Z INFO  http.request reqId=502f5836 method=POST path=/api/auth/login status=200 ms=68
+2026-11-04T10:04:22.228Z WARN  auth.login_failed reqId=15963ab7 ip=127.0.0.1 email=b***@student.pradita.ac.id reason="password salah"
+2026-11-04T10:04:22.229Z WARN  http.request reqId=15963ab7 method=POST path=/api/auth/login status=401 ms=66
+2026-11-04T10:04:22.232Z WARN  http.request reqId=39dea576 method=GET path=/api/tickets status=401 ms=1
+2026-11-04T10:04:22.236Z WARN  http.request reqId=9e879343 method=GET path=/api/users status=403 ms=2 user=7
+2026-11-04T10:04:22.242Z INFO  http.request reqId=a4f920d9 method=GET path=/api/categories status=200 ms=3 user=7
+2026-11-04T10:04:22.262Z INFO  http.request reqId=7bda0905 method=POST path=/api/tickets status=201 ms=18 user=7
+2026-11-04T10:04:22.266Z WARN  http.request reqId=9571c4f8 method=POST path=/api/tickets status=400 ms=2 user=7
+2026-11-04T10:04:22.269Z WARN  http.request reqId=75286955 method=POST path=/api/tickets status=422 ms=2 user=7
+2026-11-04T10:04:22.272Z WARN  http.request reqId=302d9dc6 method=GET path=/api/tickets/14 status=404 ms=2 user=8
+2026-11-04T10:04:22.275Z WARN  http.request reqId=663c8de2 method=GET path=/api/tickets/14 status=404 ms=2 user=2
+2026-11-04T10:04:22.279Z INFO  http.request reqId=a146fadf method=GET path=/api/tickets/14 status=200 ms=3 user=5
+2026-11-04T10:04:22.286Z INFO  http.request reqId=dabcce6c method=GET path=/api/attachments/1/download status=200 ms=5 user=5
+2026-11-04T10:04:22.289Z WARN  http.request reqId=379e7e3d method=GET path=/api/attachments/1/download status=404 ms=2 user=8
+2026-11-04T10:04:22.293Z INFO  http.request reqId=59d47b6a method=GET path=/api/tickets/14/assignees status=200 ms=3 user=5
+2026-11-04T10:04:22.302Z INFO  http.request reqId=24b36178 method=PUT path=/api/tickets/14/assign status=200 ms=7 user=5
+2026-11-04T10:04:22.306Z INFO  http.request reqId=e37c87a7 method=GET path=/api/users status=200 ms=2 user=1
+2026-11-04T10:04:22.312Z WARN  http.request reqId=eb6a2392 method=PUT path=/api/tickets/14/assign status=422 ms=4 user=5
+2026-11-04T10:04:22.316Z WARN  http.request reqId=22526231 method=PUT path=/api/tickets/14/status status=409 ms=3 user=5
+2026-11-04T10:04:22.318Z WARN  http.request reqId=74303669 method=PUT path=/api/tickets/14/status status=403 ms=1 user=7
+2026-11-04T10:04:22.327Z INFO  http.request reqId=6e9b716d method=PUT path=/api/tickets/14/status status=200 ms=7 user=5
+2026-11-04T10:04:22.334Z INFO  http.request reqId=cc984f3b method=POST path=/api/tickets/14/comments status=201 ms=6 user=5
+2026-11-04T10:04:22.341Z INFO  http.request reqId=6b970dea method=POST path=/api/tickets/14/comments status=201 ms=5 user=5
+2026-11-04T10:04:22.349Z INFO  http.request reqId=07f40118 method=PUT path=/api/tickets/14/status status=200 ms=7 user=5
+2026-11-04T10:04:22.354Z INFO  http.request reqId=9a6d4bd3 method=GET path=/api/tickets/14/comments status=200 ms=4 user=7
+2026-11-04T10:04:22.362Z INFO  http.request reqId=f34bec2a method=POST path=/api/tickets/14/comments status=201 ms=7 user=7
+2026-11-04T10:04:22.366Z INFO  http.request reqId=e4140d61 method=GET path=/api/tickets/14 status=200 ms=2 user=7
+2026-11-04T10:04:22.370Z INFO  http.request reqId=f92e300d method=GET path=/api/tickets/14/comments status=200 ms=4 user=5
+2026-11-04T10:04:22.373Z WARN  http.request reqId=b647f54b method=PUT path=/api/tickets/14/status status=422 ms=1 user=5
+2026-11-04T10:04:22.381Z INFO  http.request reqId=0b010e95 method=PUT path=/api/tickets/14/status status=200 ms=7 user=5
+2026-11-04T10:04:22.389Z INFO  http.request reqId=2196d71e method=POST path=/api/tickets/14/reopen status=200 ms=7 user=7
+2026-11-04T10:04:22.398Z INFO  http.request reqId=b07110d8 method=PUT path=/api/tickets/14/status status=200 ms=7 user=5
+2026-11-04T10:04:22.401Z WARN  http.request reqId=4b141e71 method=POST path=/api/tickets/14/feedback status=422 ms=2 user=7
+2026-11-04T10:04:22.410Z INFO  http.request reqId=bfef36aa method=POST path=/api/tickets/14/feedback status=201 ms=8 user=7
+2026-11-04T10:04:22.414Z WARN  http.request reqId=046992ca method=POST path=/api/tickets/14/feedback status=409 ms=3 user=7
+2026-11-04T10:04:22.418Z WARN  http.request reqId=f0277782 method=POST path=/api/tickets/14/comments status=409 ms=2 user=7
+2026-11-04T10:04:22.423Z INFO  http.request reqId=f500a76e method=GET path=/api/tickets/14/history status=200 ms=4 user=7
+2026-11-04T10:04:22.430Z INFO  http.request reqId=96686307 method=GET path=/api/tickets status=200 ms=5 user=8
+2026-11-04T10:04:22.433Z INFO  http.request reqId=ec2f6acc method=GET path=/api/tickets/10 status=200 ms=2 user=1
+2026-11-04T10:04:22.437Z WARN  http.request reqId=17f473ee method=GET path=/api/tickets/10/comments status=403 ms=3 user=1
+2026-11-04T10:04:22.441Z INFO  http.request reqId=2a455b34 method=GET path=/api/tickets/10 status=200 ms=2 user=6
+2026-11-04T10:04:22.444Z INFO  http.request reqId=073123da method=GET path=/api/tickets/10 status=200 ms=2 user=8
+2026-11-04T10:04:22.451Z INFO  http.request reqId=1266780e method=GET path=/api/dashboard status=200 ms=5 user=5
+2026-11-04T10:04:22.455Z INFO  http.request reqId=81ad18c7 method=GET path=/api/dashboard status=200 ms=4 user=1
+2026-11-04T10:04:22.457Z WARN  http.request reqId=1bf74960 method=GET path=/api/dashboard status=403 ms=1 user=7
+2026-11-04T10:04:22.461Z INFO  http.request reqId=20f6bee0 method=GET path=/api/dashboard/action-count status=200 ms=2 user=8
+2026-11-04T10:04:22.467Z INFO  http.request reqId=ef0bc6cd method=GET path=/api/tickets status=200 ms=4 user=5
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:25.631Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:26.344Z INFO  auth.login_success reqId=aed81c8b user=7 role=STUDENT
+2026-11-04T10:04:26.347Z INFO  http.request reqId=aed81c8b method=POST path=/api/auth/login status=200 ms=79
+2026-11-04T10:04:26.421Z INFO  auth.login_success reqId=66d7f9c2 user=8 role=STUDENT
+2026-11-04T10:04:26.423Z INFO  http.request reqId=66d7f9c2 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:26.493Z INFO  auth.login_success reqId=2a6b9bd3 user=4 role=STAFF
+2026-11-04T10:04:26.495Z INFO  http.request reqId=2a6b9bd3 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:26.565Z INFO  auth.login_success reqId=19909a7e user=1 role=ADMIN
+2026-11-04T10:04:26.566Z INFO  http.request reqId=19909a7e method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:26.572Z INFO  http.request reqId=357c0992 method=GET path=/api/categories status=200 ms=4 user=7
+2026-11-04T10:04:26.580Z WARN  http.request reqId=03e33d7b method=POST path=/api/tickets status=422 ms=4 user=7
+2026-11-04T10:04:26.584Z WARN  http.request reqId=9e32d943 method=POST path=/api/tickets status=422 ms=2 user=7
+2026-11-04T10:04:26.596Z INFO  http.request reqId=5506641c method=POST path=/api/tickets status=201 ms=10 user=7
+2026-11-04T10:04:26.605Z INFO  http.request reqId=027e61a1 method=POST path=/api/tickets status=201 ms=7 user=8
+2026-11-04T10:04:26.611Z INFO  http.request reqId=04723fa4 method=GET path=/api/tickets/14 status=200 ms=3 user=4
+2026-11-04T10:04:26.619Z INFO  http.request reqId=5dff8725 method=GET path=/api/tickets status=200 ms=6 user=4
+2026-11-04T10:04:26.623Z WARN  http.request reqId=37853f75 method=POST path=/api/tickets status=422 ms=2 user=7
+2026-11-04T10:04:26.630Z INFO  http.request reqId=ef3dced4 method=PUT path=/api/categories/7 status=200 ms=5 user=1
+2026-11-04T10:04:26.635Z INFO  http.request reqId=f0a21cb6 method=PUT path=/api/categories/7 status=200 ms=3 user=1
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:29.607Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:30.340Z INFO  auth.login_success reqId=7f8c7270 user=1 role=ADMIN
+2026-11-04T10:04:30.343Z INFO  http.request reqId=7f8c7270 method=POST path=/api/auth/login status=200 ms=78
+2026-11-04T10:04:30.418Z INFO  auth.login_success reqId=4f40719c user=4 role=STAFF
+2026-11-04T10:04:30.419Z INFO  http.request reqId=4f40719c method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:30.488Z INFO  auth.login_success reqId=fdc01a22 user=2 role=STAFF
+2026-11-04T10:04:30.489Z INFO  http.request reqId=fdc01a22 method=POST path=/api/auth/login status=200 ms=68
+2026-11-04T10:04:30.558Z INFO  auth.login_success reqId=79c8b129 user=7 role=STUDENT
+2026-11-04T10:04:30.559Z INFO  http.request reqId=79c8b129 method=POST path=/api/auth/login status=200 ms=68
+2026-11-04T10:04:30.570Z INFO  http.request reqId=30736a58 method=GET path=/api/dashboard status=200 ms=8 user=1
+2026-11-04T10:04:30.575Z INFO  http.request reqId=66d83e38 method=GET path=/api/categories status=200 ms=3 user=7
+2026-11-04T10:04:30.588Z INFO  http.request reqId=bafb69bd method=POST path=/api/tickets status=201 ms=10 user=7
+2026-11-04T10:04:30.593Z INFO  http.request reqId=4d8fbef6 method=GET path=/api/dashboard status=200 ms=4 user=1
+2026-11-04T10:04:30.598Z INFO  http.request reqId=3524a9b1 method=GET path=/api/dashboard status=200 ms=3 user=4
+2026-11-04T10:04:30.602Z INFO  http.request reqId=79b9f02e method=GET path=/api/dashboard status=200 ms=2 user=2
+2026-11-04T10:04:30.605Z WARN  http.request reqId=02dd525a method=GET path=/api/dashboard status=403 ms=1 user=7
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:33.499Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:34.271Z INFO  auth.login_success reqId=b93b9117 user=7 role=STUDENT
+2026-11-04T10:04:34.273Z INFO  http.request reqId=b93b9117 method=POST path=/api/auth/login status=200 ms=79
+2026-11-04T10:04:34.351Z INFO  auth.login_success reqId=5ac2080e user=8 role=STUDENT
+2026-11-04T10:04:34.352Z INFO  http.request reqId=5ac2080e method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:34.422Z INFO  auth.login_success reqId=903edbb3 user=4 role=STAFF
+2026-11-04T10:04:34.423Z INFO  http.request reqId=903edbb3 method=POST path=/api/auth/login status=200 ms=68
+2026-11-04T10:04:34.496Z INFO  auth.login_success reqId=93bc3e15 user=5 role=STAFF
+2026-11-04T10:04:34.497Z INFO  http.request reqId=93bc3e15 method=POST path=/api/auth/login status=200 ms=71
+2026-11-04T10:04:34.569Z INFO  auth.login_success reqId=5b92ae18 user=6 role=STAFF
+2026-11-04T10:04:34.570Z INFO  http.request reqId=5b92ae18 method=POST path=/api/auth/login status=200 ms=71
+2026-11-04T10:04:34.641Z INFO  auth.login_success reqId=1609cd73 user=1 role=ADMIN
+2026-11-04T10:04:34.642Z INFO  http.request reqId=1609cd73 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:34.649Z INFO  http.request reqId=88e1c1fb method=GET path=/api/categories status=200 ms=4 user=7
+2026-11-04T10:04:34.664Z INFO  http.request reqId=2aa4d74d method=POST path=/api/tickets status=201 ms=12 user=7
+2026-11-04T10:04:34.672Z INFO  http.request reqId=5e2b27b5 method=PUT path=/api/categories/1 status=200 ms=6 user=1
+2026-11-04T10:04:34.677Z WARN  http.request reqId=8f9ed55f method=POST path=/api/tickets status=422 ms=3 user=7
+2026-11-04T10:04:34.683Z INFO  http.request reqId=8f92dc5e method=PUT path=/api/categories/1 status=200 ms=4 user=1
+2026-11-04T10:04:34.686Z WARN  http.request reqId=5ed5988f method=POST path=/api/tickets status=422 ms=2 user=7
+2026-11-04T10:04:34.691Z WARN  http.request reqId=1060677b method=PUT path=/api/tickets/14/status status=409 ms=4 user=4
+2026-11-04T10:04:34.701Z INFO  http.request reqId=7649403d method=PUT path=/api/tickets/14/status status=200 ms=8 user=4
+2026-11-04T10:04:34.704Z WARN  http.request reqId=7cf27bf9 method=PUT path=/api/tickets/14/status status=422 ms=1 user=4
+2026-11-04T10:04:34.709Z INFO  http.request reqId=c7d63b50 method=GET path=/api/tickets/14/assignees status=200 ms=4 user=4
+2026-11-04T10:04:34.714Z WARN  http.request reqId=537894ec method=PUT path=/api/tickets/14/assign status=422 ms=4 user=1
+2026-11-04T10:04:34.723Z INFO  http.request reqId=a9bf3c55 method=PUT path=/api/tickets/14/status status=200 ms=7 user=4
+2026-11-04T10:04:34.732Z INFO  http.request reqId=1f98f716 method=POST path=/api/tickets/14/comments status=201 ms=8 user=7
+2026-11-04T10:04:34.737Z INFO  http.request reqId=576ecbd9 method=GET path=/api/tickets/14 status=200 ms=3 user=7
+2026-11-04T10:04:34.740Z WARN  http.request reqId=5a30eaf0 method=POST path=/api/tickets/14/comments status=404 ms=2 user=8
+2026-11-04T10:04:34.750Z INFO  http.request reqId=3ed44607 method=PUT path=/api/tickets/14/status status=200 ms=8 user=4
+2026-11-04T10:04:34.760Z INFO  http.request reqId=843c09e1 method=POST path=/api/tickets/14/reopen status=200 ms=9 user=7
+2026-11-04T10:04:34.766Z WARN  http.request reqId=a6d65cfb method=POST path=/api/tickets/14/feedback status=409 ms=4 user=7
+2026-11-04T10:04:34.776Z INFO  http.request reqId=b7230f68 method=PUT path=/api/tickets/14/status status=200 ms=9 user=4
+2026-11-04T10:04:34.778Z WARN  http.request reqId=b1af916c method=POST path=/api/tickets/14/feedback status=422 ms=1 user=7
+2026-11-04T10:04:34.781Z WARN  http.request reqId=1ce6a93d method=POST path=/api/tickets/14/feedback status=422 ms=1 user=7
+2026-11-04T10:04:34.792Z INFO  http.request reqId=4aab09b9 method=POST path=/api/tickets/14/feedback status=201 ms=9 user=7
+2026-11-04T10:04:34.797Z WARN  http.request reqId=87cedcf4 method=POST path=/api/tickets/14/feedback status=409 ms=4 user=7
+2026-11-04T10:04:34.802Z WARN  http.request reqId=d71de2f8 method=POST path=/api/tickets/14/comments status=409 ms=3 user=7
+2026-11-04T10:04:34.811Z INFO  http.request reqId=997ff8d0 method=POST path=/api/tickets status=201 ms=8 user=8
+2026-11-04T10:04:34.815Z INFO  http.request reqId=7fbe79f5 method=GET path=/api/tickets/15 status=200 ms=3 user=5
+2026-11-04T10:04:34.823Z INFO  http.request reqId=42ce48da method=POST path=/api/tickets status=201 ms=7 user=8
+2026-11-04T10:04:34.826Z INFO  http.request reqId=173a01e8 method=GET path=/api/tickets/16 status=200 ms=3 user=1
+2026-11-04T10:04:34.830Z INFO  http.request reqId=86ed4790 method=GET path=/api/tickets/16 status=200 ms=3 user=6
+2026-11-04T10:04:34.837Z INFO  http.request reqId=c4397a0f method=POST path=/api/tickets/16/comments status=201 ms=6 user=6
+2026-11-04T10:04:34.842Z INFO  http.request reqId=b3602ebe method=GET path=/api/tickets/16/comments status=200 ms=4 user=8
+2026-11-04T10:04:34.847Z INFO  http.request reqId=755faea6 method=GET path=/api/tickets/16/comments status=200 ms=4 user=6
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:37.830Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:38.581Z INFO  auth.login_success reqId=44a76c35 user=9 role=STUDENT
+2026-11-04T10:04:38.584Z INFO  http.request reqId=44a76c35 method=POST path=/api/auth/login status=200 ms=80
+2026-11-04T10:04:38.661Z WARN  auth.change_password_failed reqId=12fa9520 user=9 reason="password lama salah"
+2026-11-04T10:04:38.662Z WARN  http.request reqId=12fa9520 method=PUT path=/api/auth/password status=422 ms=71 user=9
+2026-11-04T10:04:38.668Z WARN  http.request reqId=4ae5440d method=PUT path=/api/auth/password status=422 ms=2 user=9
+2026-11-04T10:04:38.809Z INFO  auth.password_changed reqId=2adcdd64 user=9
+2026-11-04T10:04:38.810Z INFO  http.request reqId=2adcdd64 method=PUT path=/api/auth/password status=200 ms=140 user=9
+2026-11-04T10:04:38.881Z INFO  auth.login_success reqId=70a96287 user=9 role=STUDENT
+2026-11-04T10:04:38.883Z INFO  http.request reqId=70a96287 method=POST path=/api/auth/login status=200 ms=70
+2026-11-04T10:04:38.954Z INFO  auth.login_success reqId=624ba273 user=5 role=STAFF
+2026-11-04T10:04:38.955Z INFO  http.request reqId=624ba273 method=POST path=/api/auth/login status=200 ms=69
+2026-11-04T10:04:39.031Z INFO  auth.login_success reqId=2a118a20 user=1 role=ADMIN
+2026-11-04T10:04:39.032Z INFO  http.request reqId=2a118a20 method=POST path=/api/auth/login status=200 ms=74
+2026-11-04T10:04:39.045Z INFO  http.request reqId=636d26da method=GET path=/api/tickets status=200 ms=10 user=5
+2026-11-04T10:04:39.057Z INFO  http.request reqId=efc51494 method=PUT path=/api/tickets/13/priority status=200 ms=9 user=5
+2026-11-04T10:04:39.061Z WARN  http.request reqId=67e2d288 method=PUT path=/api/tickets/13/priority status=422 ms=2 user=5
+2026-11-04T10:04:39.066Z INFO  http.request reqId=4a4240ba method=GET path=/api/categories status=200 ms=3 user=5
+2026-11-04T10:04:39.078Z INFO  http.request reqId=98f5e672 method=PUT path=/api/tickets/13/category status=200 ms=11 user=5
+2026-11-04T10:04:39.082Z WARN  http.request reqId=bffa8947 method=GET path=/api/tickets/13 status=404 ms=3 user=5
+2026-11-04T10:04:39.087Z INFO  http.request reqId=a586df28 method=GET path=/api/users status=200 ms=3 user=1
+2026-11-04T10:04:39.164Z INFO  http.request reqId=df5ace78 method=POST path=/api/users/8/reset-password status=200 ms=76 user=1
+2026-11-04T10:04:39.237Z INFO  auth.login_success reqId=d3efde03 user=8 role=STUDENT
+2026-11-04T10:04:39.238Z INFO  http.request reqId=d3efde03 method=POST path=/api/auth/login status=200 ms=72
+2026-11-04T10:04:39.246Z INFO  http.request reqId=485db60f method=PUT path=/api/categories/7 status=200 ms=6 user=1
+2026-11-04T10:04:39.313Z INFO  auth.login_success reqId=080f6589 user=7 role=STUDENT
+2026-11-04T10:04:39.314Z INFO  http.request reqId=080f6589 method=POST path=/api/auth/login status=200 ms=67
+2026-11-04T10:04:39.318Z INFO  http.request reqId=efa56149 method=GET path=/api/categories status=200 ms=2 user=7
+2026-11-04T10:04:39.323Z INFO  http.request reqId=ef1b71c4 method=PUT path=/api/categories/7 status=200 ms=3 user=1
+2026-11-04T10:04:39.325Z WARN  http.request reqId=209de53f method=PUT path=/api/categories/7 status=422 ms=1 user=1
+2026-11-04T10:04:39.327Z WARN  http.request reqId=7b4ec188 method=GET path=/api/tickets/abc status=422 ms=1 user=7
+2026-11-04T10:04:39.330Z WARN  http.request reqId=2635ebc0 method=GET path=/api/tickets/999999 status=404 ms=2 user=7
+2026-11-04T10:04:39.332Z WARN  http.request reqId=70cb2616 method=POST path=/api/auth/login status=400 ms=0
+2026-11-04T10:04:39.334Z WARN  http.request reqId=04aa508f method=GET path=/api/tickets status=422 ms=1 user=7
+2026-11-04T10:04:39.335Z WARN  http.request reqId=b9f57320 method=GET path=/api/tidak-ada status=404 ms=0
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:04:42.254Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:04:43.500Z WARN  auth.login_failed reqId=11606487 ip=127.0.0.1 email=b***@student.pradita.ac.id reason="password salah"
+2026-11-04T10:04:43.501Z WARN  http.request reqId=11606487 method=POST path=/api/auth/login status=401 ms=76
+2026-11-04T10:04:43.845Z INFO  auth.login_success reqId=19386548 user=7 role=STUDENT
+2026-11-04T10:04:43.848Z INFO  http.request reqId=19386548 method=POST path=/api/auth/login status=200 ms=73
+2026-11-04T10:04:43.869Z INFO  http.request reqId=b03204dd method=GET path=/api/dashboard/action-count status=200 ms=9 user=7
+2026-11-04T10:04:43.872Z INFO  http.request reqId=92f98d07 method=GET path=/api/tickets status=200 ms=14 user=7
+2026-11-04T10:04:43.915Z INFO  http.request reqId=714a49f4 method=GET path=/api/auth/me status=200 ms=2 user=7
+2026-11-04T10:04:43.927Z INFO  http.request reqId=e84214f3 method=GET path=/api/dashboard/action-count status=200 ms=2 user=7
+2026-11-04T10:04:43.978Z INFO  http.request reqId=434cf6a8 method=GET path=/api/categories status=200 ms=4 user=7
+2026-11-04T10:04:44.064Z INFO  http.request reqId=b8496197 method=GET path=/api/auth/me status=200 ms=3 user=7
+2026-11-04T10:04:44.075Z INFO  http.request reqId=455536e7 method=GET path=/api/dashboard/action-count status=200 ms=2 user=7
+2026-11-04T10:04:44.133Z INFO  http.request reqId=494390b6 method=GET path=/api/auth/me status=200 ms=2 user=7
+2026-11-04T10:04:44.146Z INFO  http.request reqId=0a29e5f1 method=GET path=/api/dashboard/action-count status=200 ms=2 user=7
+2026-11-04T10:04:45.653Z INFO  http.request reqId=a88beeda method=GET path=/api/tickets status=200 ms=6 user=7
+2026-11-04T10:04:46.182Z INFO  http.request reqId=2fb79642 method=GET path=/api/auth/me status=304 ms=3 user=7
+2026-11-04T10:04:46.202Z INFO  http.request reqId=e7443982 method=GET path=/api/dashboard/action-count status=304 ms=2 user=7
+2026-11-04T10:04:46.203Z WARN  http.request reqId=20968dde method=GET path=/api/tickets/999999 status=404 ms=4 user=7
+2026-11-04T10:04:46.412Z INFO  auth.login_success reqId=d622efc6 user=1 role=ADMIN
+2026-11-04T10:04:46.413Z INFO  http.request reqId=d622efc6 method=POST path=/api/auth/login status=200 ms=72
+2026-11-04T10:04:46.427Z INFO  http.request reqId=27ecce9c method=GET path=/api/units status=200 ms=6 user=1
+2026-11-04T10:04:46.430Z INFO  http.request reqId=ca4562e5 method=GET path=/api/dashboard status=200 ms=9 user=1
+2026-11-04T10:04:46.430Z INFO  http.request reqId=35f6942d method=GET path=/api/dashboard/action-count status=200 ms=9 user=1
+2026-11-04T10:04:46.476Z INFO  http.request reqId=ce805589 method=GET path=/api/auth/me status=200 ms=3 user=1
+2026-11-04T10:04:46.489Z INFO  http.request reqId=6ecddfc5 method=GET path=/api/dashboard/action-count status=200 ms=3 user=1
+2026-11-04T10:04:46.544Z INFO  http.request reqId=418e37c2 method=GET path=/api/units status=200 ms=3 user=1
+2026-11-04T10:04:46.610Z INFO  http.request reqId=aab3de37 method=GET path=/api/auth/me status=200 ms=2 user=1
+2026-11-04T10:04:46.622Z INFO  http.request reqId=71d1a215 method=GET path=/api/dashboard/action-count status=200 ms=2 user=1
+2026-11-04T10:04:46.623Z INFO  http.request reqId=1dc27b74 method=GET path=/api/units status=200 ms=4 user=1
+2026-11-04T10:04:46.677Z INFO  http.request reqId=fec07362 method=GET path=/api/units status=304 ms=2 user=1
+2026-11-04T10:04:46.678Z INFO  http.request reqId=56fa0215 method=GET path=/api/categories status=200 ms=3 user=1
+2026-11-04T10:04:46.743Z INFO  http.request reqId=be14a6c9 method=GET path=/api/auth/me status=200 ms=2 user=1
+2026-11-04T10:04:46.760Z INFO  http.request reqId=df6daa57 method=GET path=/api/units status=200 ms=3 user=1
+2026-11-04T10:04:46.761Z INFO  http.request reqId=286fe6fa method=GET path=/api/dashboard/action-count status=200 ms=3 user=1
+2026-11-04T10:04:46.811Z INFO  http.request reqId=f86969a8 method=GET path=/api/users status=200 ms=3 user=1
+2026-11-04T10:04:46.869Z INFO  http.request reqId=010c4bf5 method=GET path=/api/auth/me status=200 ms=2 user=1
+2026-11-04T10:04:46.881Z INFO  http.request reqId=e6896cc3 method=GET path=/api/units status=200 ms=2 user=1
+2026-11-04T10:04:46.881Z INFO  http.request reqId=ae5a0f3c method=GET path=/api/dashboard/action-count status=200 ms=2 user=1
+2026-11-04T10:04:46.942Z INFO  http.request reqId=039b61c1 method=GET path=/api/auth/me status=200 ms=3 user=1
+2026-11-04T10:04:46.953Z INFO  http.request reqId=a7973cc6 method=GET path=/api/units status=200 ms=3 user=1
+2026-11-04T10:04:46.957Z INFO  http.request reqId=507ca461 method=GET path=/api/dashboard status=200 ms=6 user=1
+2026-11-04T10:04:46.957Z INFO  http.request reqId=dcba613e method=GET path=/api/dashboard/action-count status=200 ms=6 user=1
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:05:00.627Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:05:04.704Z ERROR db.unavailable reqId=d1ecec1b method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P1001 message="Please make sure your database server is running at `localhost:3306`."
+2026-11-04T10:05:04.705Z ERROR http.request reqId=d1ecec1b method=POST path=/api/auth/login status=503 ms=12
+2026-11-04T10:05:06.732Z ERROR db.unavailable reqId=84a4ec43 method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P1017 message="Server has closed the connection."
+2026-11-04T10:05:06.733Z ERROR http.request reqId=84a4ec43 method=POST path=/api/auth/login status=503 ms=2
+2026-11-04T10:05:06.812Z INFO  auth.login_success reqId=ca88fed4 user=7 role=STUDENT
+2026-11-04T10:05:06.815Z INFO  http.request reqId=ca88fed4 method=POST path=/api/auth/login status=200 ms=76
+Terminated
+
+> praditacare@1.0.0 start
+> npm run start -w @praditacare/api
+
+
+> @praditacare/api@1.0.0 start
+> node --env-file=../../.env dist/index.js
+
+PraditaCare API berjalan di http://localhost:4000
+2026-11-04T10:05:08.255Z INFO  server.start mode=production port=4000 web="disajikan oleh API"
+2026-11-04T10:05:08.279Z ERROR job.auto_close_failed error=PrismaClientKnownRequestError code=P2021 message="The table `Ticket` does not exist in the current database."
+2026-11-04T10:05:08.883Z ERROR http.unhandled_error reqId=93683d9b method=POST path=/api/auth/login error=PrismaClientKnownRequestError code=P2021 message="The table `User` does not exist in the current database."
+2026-11-04T10:05:08.884Z ERROR http.request reqId=93683d9b method=POST path=/api/auth/login status=500 ms=9
+2026-11-04T10:05:10.865Z WARN  auth.login_failed reqId=77d72fe5 ip=127.0.0.1 email=b***@student.pradita.ac.id reason="email tidak terdaftar"
+2026-11-04T10:05:10.867Z WARN  http.request reqId=77d72fe5 method=POST path=/api/auth/login status=401 ms=86
+Terminated
+## Cek otomatis: log TIDAK memuat password, token JWT, JWT_SECRET, atau email utuh
+jumlah baris log            : 389
+memuat password 'Pradita123!': 0
+memuat token JWT (eyJ...)    : 0
+memuat nilai JWT_SECRET      : 0
+memuat email utuh            : 0
