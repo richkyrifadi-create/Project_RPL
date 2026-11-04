@@ -9,7 +9,7 @@ export const IdParamSchema = z.object({ Id: z.coerce.number().int().positive("Id
 
 export const RequiredText = (label: string, min = 1, max = 255) =>
   z
-    .string({ required_error: `${label} wajib diisi`, invalid_type_error: `${label} wajib diisi` })
+    .string({ error: `${label} wajib diisi` })
     .trim()
     .min(min, min <= 1 ? `${label} wajib diisi` : `${label} minimal ${min} karakter`)
     .max(max, `${label} maksimal ${max} karakter`);

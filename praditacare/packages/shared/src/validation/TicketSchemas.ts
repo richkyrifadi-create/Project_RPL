@@ -17,9 +17,9 @@ export const LocationField = z
 export const CreateTicketSchema = z.object({
   Title: RequiredText("Judul", 5, 200),
   Description: RequiredText("Deskripsi", 10, 5000),
-  CategoryId: z.coerce.number({ invalid_type_error: "Kategori wajib dipilih" }).int().positive("Kategori wajib dipilih"),
+  CategoryId: z.coerce.number({ error: "Kategori wajib dipilih" }).int().positive("Kategori wajib dipilih"),
   Location: LocationField,
-  Priority: z.enum(TicketPriorityValues, { errorMap: () => ({ message: "Prioritas tidak valid" }) }).default("MEDIUM"),
+  Priority: z.enum(TicketPriorityValues, { error: "Prioritas tidak valid" }).default("MEDIUM"),
   IsAnonymous: BooleanLike.default(false)
 });
 
@@ -43,22 +43,22 @@ export const AssignTicketSchema = z.object({
 });
 
 export const ChangePrioritySchema = z.object({
-  Priority: z.enum(TicketPriorityValues, { errorMap: () => ({ message: "Prioritas tidak valid" }) })
+  Priority: z.enum(TicketPriorityValues, { error: "Prioritas tidak valid" })
 });
 
 export const ChangeStatusSchema = z
   .object({
-    Status: z.enum(TicketStatusValues, { errorMap: () => ({ message: "Status tidak valid" }) }),
+    Status: z.enum(TicketStatusValues, { error: "Status tidak valid" }),
     Note: z.string().trim().max(1000).optional().nullable()
   })
   .superRefine((data, ctx) => {
     if (StatusesRequiringNote.includes(data.Status) && !data.Note) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Catatan wajib diisi untuk status ini", path: ["Note"] });
+      ctx.addIssue({ code: "custom", message: "Catatan wajib diisi untuk status ini", path: ["Note"] });
     }
   });
 
 export const ChangeCategorySchema = z.object({
-  CategoryId: z.coerce.number({ invalid_type_error: "Kategori wajib dipilih" }).int().positive("Kategori wajib dipilih"),
+  CategoryId: z.coerce.number({ error: "Kategori wajib dipilih" }).int().positive("Kategori wajib dipilih"),
   Note: z.string().trim().max(1000).optional().nullable()
 });
 
@@ -73,12 +73,12 @@ export const ReopenTicketSchema = z.object({
 
 export const FeedbackSchema = z
   .object({
-    Rating: z.coerce.number({ invalid_type_error: "Rating wajib dipilih" }).int().min(1, "Rating 1 sampai 5").max(5, "Rating 1 sampai 5"),
+    Rating: z.coerce.number({ error: "Rating wajib dipilih" }).int().min(1, "Rating 1 sampai 5").max(5, "Rating 1 sampai 5"),
     Comment: z.string().trim().max(1000).optional().nullable()
   })
   .superRefine((data, ctx) => {
     const error = ValidateFeedbackComment(data.Rating, data.Comment);
-    if (error) ctx.addIssue({ code: z.ZodIssueCode.custom, message: error, path: ["Comment"] });
+    if (error) ctx.addIssue({ code: "custom", message: error, path: ["Comment"] });
   });
 
 export const DashboardQuerySchema = z.object({
