@@ -54,8 +54,12 @@ export function FormatLogLine(level: LogLevel, event: string, fields: LogFields 
 /** Ringkasan error yang aman dicatat: nama, kode, pesan yang sudah disamarkan; stack hanya bila diminta (development). */
 export function SafeErrorFields(err: unknown, includeStack: boolean): LogFields {
   if (!(err instanceof Error)) return { error: "UnknownError", message: ScrubText(String(err)) };
-  const code = (err as { code?: unknown }).code;
-  const fields: LogFields = { error: err.name, code: typeof code === "string" ? code : undefined, message: ScrubText(err.message) };
+  const { code: rawCode, errorCode } = err as { code?: unknown; errorCode?: unknown };
+  const code = typeof rawCode === "string" ? rawCode : errorCode;
+  // Pesan Prisma memuat potongan kode pemanggil; cukup baris terakhir yang berisi penyebab.
+  const lines = err.message.split("\n").map((line) => line.trim()).filter(Boolean);
+  const message = err.message.includes("invocation") && lines.length ? lines[lines.length - 1] : lines.join(" ");
+  const fields: LogFields = { error: err.name, code: typeof code === "string" ? code : undefined, message: ScrubText(message) };
   if (includeStack && err.stack) {
     fields.stack = err.stack
       .split("\n")

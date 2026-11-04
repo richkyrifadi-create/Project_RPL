@@ -37,3 +37,15 @@ describe("SafeLog (security: log tanpa data sensitif)", () => {
     expect(SafeErrorFields(err, true).stack).toBeTypeOf("string");
   });
 });
+
+describe("SafeErrorFields untuk error Prisma", () => {
+  it("memakai errorCode (mis. P1001 database tidak terjangkau) bila code tidak ada", () => {
+    const err = Object.assign(new Error("Can't reach database server at `localhost:3306`"), { name: "PrismaClientInitializationError", errorCode: "P1001" });
+    expect(SafeErrorFields(err, false)).toMatchObject({ error: "PrismaClientInitializationError", code: "P1001" });
+  });
+
+  it("hanya mengambil baris penyebab dari pesan Prisma yang memuat potongan kode", () => {
+    const err = new Error("\nInvalid `prisma.user.findUnique()` invocation in\n/app/dist/routes/AuthRoutes.js:40:38\n\n→ 40 const user = await prisma.user.findUnique(\nCan't reach database server at `localhost:3306`");
+    expect(SafeErrorFields(err, false).message).toBe("Can't reach database server at `localhost:3306`");
+  });
+});
