@@ -1,0 +1,11 @@
+# Konteks build Docker: hanya kode yang dibutuhkan untuk build aplikasi.
+**/node_modules
+**/dist
+.env
+.env.*
+!.env.example
+apps/api/uploads
+docs
+deploy/nginx/certs
+**/*.log
+.git
