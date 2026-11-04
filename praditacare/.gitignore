@@ -3,3 +3,5 @@ dist
 .env
 apps/api/uploads
 *.log
+deploy/.env
+deploy/nginx/certs

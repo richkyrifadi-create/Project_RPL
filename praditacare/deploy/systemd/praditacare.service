@@ -1,0 +1,27 @@
+# Alternatif tanpa Docker: menjalankan PraditaCare sebagai service systemd.
+# Asumsi: kode di /opt/praditacare/praditacare, user sistem "praditacare", .env produksi di /opt/praditacare/praditacare/.env
+# Pasang: sudo cp deploy/systemd/praditacare.service /etc/systemd/system/
+#         sudo systemctl daemon-reload && sudo systemctl enable --now praditacare
+[Unit]
+Description=PraditaCare (API + web) di 127.0.0.1:4000
+After=network-online.target mariadb.service mysql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=praditacare
+Group=praditacare
+WorkingDirectory=/opt/praditacare/praditacare/apps/api
+EnvironmentFile=/opt/praditacare/praditacare/.env
+ExecStart=/usr/bin/env node dist/index.js
+Restart=on-failure
+RestartSec=5
+# Pengamanan dasar
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/praditacare/praditacare/apps/api/uploads
+
+[Install]
+WantedBy=multi-user.target

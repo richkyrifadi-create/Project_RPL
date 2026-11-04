@@ -2,7 +2,7 @@
 
 Aplikasi web layanan bantuan dan pengaduan mahasiswa Universitas Pradita. Kode aplikasi ada di folder [`praditacare/`](praditacare/).
 
-**Dokumen penting:** [Cara menjalankan lengkap](HowToRun.md) · [Checklist MVP](checklist_mvp.md) · [Video demo](demo.mp4) · [Hasil uji security](praditacare/docs/security/HASIL-UJI-SECURITY.md) · [Log aman & penanganan error](praditacare/docs/security/LOG-AMAN-DAN-ERROR.md) · [Bukti verifikasi fresh clone](praditacare/docs/verifikasi-fresh-clone/RINGKASAN.md) · [Dokumen arsitektur](Dok_Arsitektur.md)
+**Dokumen penting:** [Cara menjalankan lengkap](HowToRun.md) · [Checklist MVP](checklist_mvp.md) · [Video demo](demo.mp4) · [Hasil uji security](praditacare/docs/security/HASIL-UJI-SECURITY.md) · [Log aman & penanganan error](praditacare/docs/security/LOG-AMAN-DAN-ERROR.md) · [Bukti verifikasi fresh clone](praditacare/docs/verifikasi-fresh-clone/RINGKASAN.md) · [Deploy online (VPS / Raspberry Pi)](praditacare/docs/deployment/README.md) · [Dokumen arsitektur](Dok_Arsitektur.md)
 
 ---
 
@@ -75,6 +75,8 @@ npm start                   # menyalakan aplikasi di http://localhost:4000
 ```
 
 Buka **http://localhost:4000**. Server sengaja **menolak menyala** bila `NODE_ENV=production` tetapi `JWT_SECRET` masih nilai contoh.
+
+Panduan lengkap online di `https://<ip>/praditacare` (Docker atau systemd, HTTPS, Raspberry Pi/Orange Pi) beserta bukti uji dan screenshot: [praditacare/docs/deployment/](praditacare/docs/deployment/README.md).
 
 Untuk server sungguhan (VPS/kampus): jalankan langkah yang sama di server, pasang reverse proxy HTTPS (Nginx/Caddy) yang meneruskan ke port 4000 lalu isi `TRUST_PROXY=1`, jalankan `npm start` dengan pengelola proses (mis. `pm2 start npm --name praditacare -- start`), dan **jangan** jalankan `db:seed` (akun demo memakai password yang diketahui umum).
 
