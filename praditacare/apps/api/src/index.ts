@@ -11,7 +11,7 @@ CreateApp().listen(Config.Port, () => {
   Log.Info("server.start", {
     mode: Config.IsProduction ? "production" : "development",
     port: Config.Port,
-    web: Config.WebDistDir ? "disajikan oleh API" : "terpisah (vite dev)"
+    web: Config.WebDistDir ? "disajikan oleh API" : "tidak disajikan (pakai Vite :5173)"
   });
   StartAutoCloseJob();
 });

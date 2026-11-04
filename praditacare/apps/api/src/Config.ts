@@ -9,6 +9,11 @@ const isProduction = process.env.NODE_ENV === "production";
 const corsOrigin = (process.env.CORS_ORIGIN ?? "http://localhost:5173").split(",").map((origin) => origin.trim());
 const webDistDir = path.resolve(process.cwd(), process.env.WEB_DIST_DIR ?? "../web/dist");
 
+function ShouldServeWeb(): boolean {
+  const flag = process.env.SERVE_WEB ?? (isProduction ? "true" : "false");
+  return flag === "true" && fs.existsSync(path.join(webDistDir, "index.html"));
+}
+
 const problems = CheckSecurityConfig({ IsProduction: isProduction, JwtSecret: jwtSecret, CorsOrigin: corsOrigin });
 if (problems.length && isProduction) {
   throw new Error(`Konfigurasi production tidak aman: ${problems.join("; ")}. Lihat README bagian Deploy.`);
@@ -24,7 +29,7 @@ export const Config = {
   CorsOrigin: corsOrigin,
   /** Jumlah reverse proxy di depan API (untuk IP asli pada rate limit). 0 = tanpa proxy. */
   TrustProxy: Number(process.env.TRUST_PROXY ?? 0),
-  /** Folder hasil build web; bila ada, API sekaligus menyajikan web (mode deploy satu port). */
-  WebDistDir: process.env.SERVE_WEB === "false" || !fs.existsSync(path.join(webDistDir, "index.html")) ? null : webDistDir,
+  /** Folder hasil build web. Di production (atau SERVE_WEB=true) API sekaligus menyajikan web: mode deploy satu port. */
+  WebDistDir: ShouldServeWeb() ? webDistDir : null,
   ConfigWarnings: problems
 };
